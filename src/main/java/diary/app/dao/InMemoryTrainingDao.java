@@ -72,7 +72,6 @@ public class InMemoryTrainingDao implements TrainingDao {
     }
 
     @Override
-    //Написано криво, так как дел полно, времени нет как красиво сделать
     public List<Training> getTrainingsFromThePeriod(String login, LocalDate startDate, LocalDate endDate) {
         Map<TrainingKey, Training> allPersonTraining = clientToTrainingCache.get(login);
         List<Training> intermediateResult = new ArrayList<>(allPersonTraining.values());

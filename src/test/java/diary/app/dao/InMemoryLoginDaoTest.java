@@ -24,9 +24,5 @@ public class InMemoryLoginDaoTest {
         assertEquals(12, loginDao.getEncodedPassword("user1"));
         assertThrows(NullPointerException.class, () -> loginDao.getEncodedPassword("user2"));
     }
-    @Test
-    //????? как этот тест написать?
-    public void addNewUserTest() {
-        LoginDao loginDao = new InMemoryLoginDao();
-    }
+
 }
