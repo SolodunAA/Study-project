@@ -6,6 +6,7 @@ import diary.app.auxiliaryfunctions.PasswordEncoder;
 import diary.app.config.ConfigReader;
 import diary.app.dao.*;
 import diary.app.dto.Role;
+import diary.app.in.ConsoleReader;
 import diary.app.service.*;
 
 import java.util.Properties;
@@ -18,11 +19,16 @@ public class AppStarter {
         PasswordEncoder passwordEncoder = new HashEncoder();
         LoginDao loginDao = new InMemoryLoginDao();
         UserRolesDao userRolesDao = new InMemoryRolesDao();
+        ConsoleReader consoleReader = new ConsoleReader();
         setInitialConfigs(loginDao, userRolesDao, trainingDao);
-        AuthenticationService authenticationService = new AuthenticationServiceImpl(loginDao, passwordEncoder, auditDao);
-        RegistrationService registrationService = new RegistrationServiceImpl(passwordEncoder, loginDao, userRolesDao, auditDao);
-        UserOfficeServise userOffice = new UserOfficeServise(trainingDao, userRolesDao, auditDao);
-        DiaryApp diaryApp = new DiaryApp(userRolesDao, registrationService, authenticationService, userOffice, auditDao);
+        AuthenticationService authenticationService =
+                new AuthenticationServiceImpl(loginDao, passwordEncoder, auditDao);
+        RegistrationService registrationService =
+                new RegistrationServiceImpl(passwordEncoder, loginDao, userRolesDao, auditDao, consoleReader);
+        UserOfficeService userOffice =
+                new UserOfficeService(trainingDao, userRolesDao, auditDao, consoleReader);
+        DiaryApp diaryApp =
+                new DiaryApp(userRolesDao, registrationService, authenticationService, userOffice, auditDao, consoleReader);
         diaryApp.run();
     }
 

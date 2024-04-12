@@ -15,27 +15,31 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final LoginDao loginDAO;
     private final UserRolesDao userRolesDao;
     private final AuditDao auditDao;
+    private final ConsoleReader consoleReader;
 
     public RegistrationServiceImpl(PasswordEncoder passwordEncoder,
                                    LoginDao loginDAO,
-                                   UserRolesDao userRolesDao, AuditDao auditDao) {
+                                   UserRolesDao userRolesDao,
+                                   AuditDao auditDao,
+                                   ConsoleReader consoleReader) {
         this.passwordEncoder = passwordEncoder;
         this.loginDAO = loginDAO;
         this.userRolesDao = userRolesDao;
         this.auditDao = auditDao;
+        this.consoleReader = consoleReader;
     }
 
     @Override
     public void register() {
         ConsolePrinter.print("Enter login");
-        String login = ConsoleReader.read();
+        String login = consoleReader.read();
         boolean isAlreadyExists = loginDAO.checkIfUserExist(login);
         if (isAlreadyExists) {
             auditDao.addAuditItem(new AuditItem(login, "tried to register again", login));
             ConsolePrinter.print("Login already exists");
         } else {
             ConsolePrinter.print("Enter password");
-            String password = ConsoleReader.read();
+            String password = consoleReader.read();
             int encodedPswd = passwordEncoder.encode(password);
             loginDAO.addNewUser(login, encodedPswd);
             auditDao.addAuditItem(new AuditItem(login, "register", login));
