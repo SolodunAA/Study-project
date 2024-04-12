@@ -1,4 +1,4 @@
-package diary.app.dao;
+package diary.app.auxiliaryfunctions;
 
 import diary.app.auxiliaryfunctions.HashEncoder;
 import org.junit.Test;

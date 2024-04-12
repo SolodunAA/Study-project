@@ -3,6 +3,9 @@ package diary.app.service;
 import java.util.Arrays;
 import java.util.Optional;
 
+/**
+ * list of constants users and admin possible actions
+ */
 public enum UserAction {
     SEE_USER_TRAININGS("see your trainings", "1"),
     EDIT_USER_TRAININGS("edit your trainings", "2"),
@@ -16,15 +19,28 @@ public enum UserAction {
     private final String actionName;
     private final String actionAlias;
 
+    /**
+     * constructor
+     * @param actionName - name of action
+     * @param actionAlias - short action name
+     */
     UserAction(String actionName, String actionAlias) {
         this.actionName = actionName;
         this.actionAlias = actionAlias;
     }
 
+    /**
+     * method describe user what he can do
+     * @return string of description
+     */
     public String getActionDescriptionForUser() {
         return "Enter " + actionAlias + " to " + actionName;
     }
 
+    /**
+     * get short action name
+     * @return short action name
+     */
     public String getActionAlias() {
         return actionAlias;
     }

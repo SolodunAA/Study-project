@@ -158,7 +158,6 @@ public class UserOfficeServise {
     }
 
     private void changeTheTraining(String login) {
-        Set<String> trainingTypes = trainingDao.getTrainingTypes();
         ConsolePrinter.print("Enter the day of the changing training");
         LocalDate date = LocalDate.parse(ConsoleReader.read());
         ConsolePrinter.print("Enter the type of the changing training");
@@ -183,7 +182,8 @@ public class UserOfficeServise {
                 newDate = LocalDate.parse(ConsoleReader.read());
             }
             case ("2") -> {
-                ConsolePrinter.print("Enter new type of your training");
+                Set<String> trainingTypes = trainingDao.getTrainingTypes();
+                ConsolePrinter.print("Enter new type of your training from " + trainingTypes);
                 newType = ConsoleReader.read();
             }
             case ("3") -> {
@@ -199,13 +199,9 @@ public class UserOfficeServise {
                 newAdditionalInfo = ConsoleReader.read();
             }
         }
-        if (!trainingTypes.contains(newType)) {
-            ConsolePrinter.print("Invalid type entered " + type);
-            return;
-        }
+
         Training newTraining = new Training(newDate, newType, newTimeInMinutes, newCalories, newAdditionalInfo);
         trainingDao.addNewTraining(login, newTraining);
-
     }
 
     private void showAllTrainingsForThePeriod(String login) {
@@ -242,10 +238,6 @@ public class UserOfficeServise {
         LocalDate date = LocalDate.parse(ConsoleReader.read());
         ConsolePrinter.print("Enter type of your training. Valid types=" + trainingTypes);
         String type = ConsoleReader.read();
-        if (!trainingTypes.contains(type)) {
-            ConsolePrinter.print("Invalid type entered " + type);
-            return;
-        }
         ConsolePrinter.print("Enter time your training");
         double timeInMinutes = Double.parseDouble(ConsoleReader.read());
         ConsolePrinter.print("Enter waste your calories");

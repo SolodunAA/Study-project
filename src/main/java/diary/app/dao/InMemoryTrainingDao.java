@@ -5,7 +5,10 @@ import diary.app.out.ConsolePrinter;
 
 import java.time.LocalDate;
 import java.util.*;
-
+/**
+ * class stores information about trainings and o some actions on them: add, get,
+ * delete and etc
+ */
 public class InMemoryTrainingDao implements TrainingDao {
 
     private final Set<String> trainingTypes = new HashSet<>();
@@ -16,6 +19,10 @@ public class InMemoryTrainingDao implements TrainingDao {
     public void addNewTraining(String login, Training tng) {
         TrainingKey trainingKey = new TrainingKey(tng.getType(), tng.getDate());
         Map<TrainingKey, Training> allPersonTraining = clientToTrainingCache.get(login);
+        if (!trainingTypes.contains(tng.getType())) {
+            ConsolePrinter.print("Invalid type entered " + tng.getType());
+            return;
+        }
         if (allPersonTraining == null) {
             allPersonTraining = new HashMap<>();
             clientToTrainingCache.put(login, allPersonTraining);
