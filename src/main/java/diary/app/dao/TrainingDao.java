@@ -10,8 +10,6 @@ public interface TrainingDao {
     void addNewTraining(String login, Training tng);
     Training getTraining(String login, LocalDate date, String type);
     void deleteTraining(String login, LocalDate date, String type);
-    void changeTraining(String login, LocalDate newDate, String newType, double newTimeInMinutes,
-                        int newCalories, String newAdditionalInfo);
     List<Training> getAllTrainings(String login);
     List<Training> getTrainingsFromThePeriod(String login, LocalDate startDate, LocalDate endDate);
     Set<String> getTrainingTypes();

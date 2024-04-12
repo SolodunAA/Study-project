@@ -59,9 +59,6 @@ public class InMemoryTrainingDao implements TrainingDao {
         }
     }
 
-    public void changeTraining(String login, LocalDate newDate, String newType, double newTimeInMinutes, int newCalories, String newAdditionalInfo){
-
-    }
 
     @Override
     public List<Training> getAllTrainings(String login) {
