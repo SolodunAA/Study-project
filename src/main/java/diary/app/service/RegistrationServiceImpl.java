@@ -4,6 +4,7 @@ import diary.app.dao.AuditDao;
 import diary.app.dao.UserRolesDao;
 import diary.app.dto.AuditItem;
 import diary.app.dto.Role;
+import diary.app.in.Reader;
 import diary.app.out.ConsolePrinter;
 import diary.app.in.ConsoleReader;
 import diary.app.auxiliaryfunctions.PasswordEncoder;
@@ -15,31 +16,30 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final LoginDao loginDAO;
     private final UserRolesDao userRolesDao;
     private final AuditDao auditDao;
-    private final ConsoleReader consoleReader;
+    private final Reader reader;
 
     public RegistrationServiceImpl(PasswordEncoder passwordEncoder,
                                    LoginDao loginDAO,
                                    UserRolesDao userRolesDao,
-                                   AuditDao auditDao,
-                                   ConsoleReader consoleReader) {
+                                   AuditDao auditDao, Reader reader) {
         this.passwordEncoder = passwordEncoder;
         this.loginDAO = loginDAO;
         this.userRolesDao = userRolesDao;
         this.auditDao = auditDao;
-        this.consoleReader = consoleReader;
+        this.reader = reader;
     }
 
     @Override
     public void register() {
         ConsolePrinter.print("Enter login");
-        String login = consoleReader.read();
+        String login = reader.read();
         boolean isAlreadyExists = loginDAO.checkIfUserExist(login);
         if (isAlreadyExists) {
             auditDao.addAuditItem(new AuditItem(login, "tried to register again", login));
             ConsolePrinter.print("Login already exists");
         } else {
             ConsolePrinter.print("Enter password");
-            String password = consoleReader.read();
+            String password = reader.read();
             int encodedPswd = passwordEncoder.encode(password);
             loginDAO.addNewUser(login, encodedPswd);
             auditDao.addAuditItem(new AuditItem(login, "register", login));

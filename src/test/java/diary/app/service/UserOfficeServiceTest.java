@@ -18,7 +18,9 @@ public class UserOfficeServiceTest {
         TrainingDao trainingDao = new InMemoryTrainingDao();
         UserRolesDao userRolesDao = new InMemoryRolesDao();
         AuditDao auditDao = new InMemoryAuditDao();
-        UserOfficeService userOfficeService = new UserOfficeService(trainingDao, userRolesDao, auditDao, crMock);
+        DefaultUserOfficeService defaultUserOfficeService = new DefaultUserOfficeService(trainingDao, crMock, auditDao, trainingInteractions);
+        AdminOfficeService adminOfficeService = new AdminOfficeService(crMock, auditDao, userRolesDao, trainingDao, defaultUserOfficeService, trainingInteractions);
+        UserOfficeService userOfficeService = new UserOfficeService(defaultUserOfficeService, adminOfficeService, crMock, reader, auditDao);
 
         Mockito.when(crMock.read()).thenReturn("exit");
 
@@ -32,7 +34,9 @@ public class UserOfficeServiceTest {
         TrainingDao trainingDao = new InMemoryTrainingDao();
         UserRolesDao userRolesDao = new InMemoryRolesDao();
         AuditDao auditDao = new InMemoryAuditDao();
-        UserOfficeService userOfficeService = new UserOfficeService(trainingDao, userRolesDao, auditDao, crMock);
+        DefaultUserOfficeService defaultUserOfficeService = new DefaultUserOfficeService(trainingDao, crMock, auditDao, trainingInteractions);
+        AdminOfficeService adminOfficeService = new AdminOfficeService(crMock, auditDao, userRolesDao, trainingDao, defaultUserOfficeService, trainingInteractions);
+        UserOfficeService userOfficeService = new UserOfficeService(defaultUserOfficeService, adminOfficeService, crMock, reader, auditDao);
 
         String user = "login";
         String type = "swimming";

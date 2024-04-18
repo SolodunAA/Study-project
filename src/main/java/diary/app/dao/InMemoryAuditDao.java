@@ -16,12 +16,18 @@ public class InMemoryAuditDao implements AuditDao {
 
     /**
      * add action in auditCache
-     *
      * @param auditItem action we want to add to auditCache
      */
     @Override
     public void addAuditItem(AuditItem auditItem) {
         auditCache.add(auditItem);
+    }
+    /**
+     * @return audit record size
+     */
+    @Override
+    public int AuditItemsSize() {
+        return auditCache.size();
     }
 
     /**

@@ -1,4 +1,4 @@
-package diary.app.service;
+package diary.app.dto;
 
 import java.util.Arrays;
 import java.util.Optional;

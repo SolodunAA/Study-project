@@ -1,7 +1,5 @@
 package diary.app.dto;
 
-import diary.app.service.UserAction;
-
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;

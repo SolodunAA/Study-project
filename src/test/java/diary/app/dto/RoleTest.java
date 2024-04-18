@@ -1,8 +1,5 @@
 package diary.app.dto;
 
-import diary.app.dto.Role;
-import diary.app.out.ConsolePrinter;
-import diary.app.service.UserAction;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.util.Set;

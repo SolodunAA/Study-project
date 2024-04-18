@@ -1,5 +1,6 @@
 package diary.app.service;
 
+import diary.app.dto.UserAction;
 import org.junit.Test;
 
 import java.util.Arrays;

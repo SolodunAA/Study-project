@@ -19,7 +19,7 @@ public class AuthenticationServiceImplTest {
         PasswordEncoder passwordEncoder = new HashEncoder();
         AuditDao auditDao = new InMemoryAuditDao();
 
-        AuthenticationService authenticationService = new AuthenticationServiceImpl(loginDao, passwordEncoder, auditDao);
+        AuthenticationService authenticationService = new AuthenticationServiceImpl(loginDao, passwordEncoder, auditDao, consoleReader, userRolesDao, userOffice, reader);
 
         assertFalse(authenticationService.auth("user", "password"));
     }
@@ -32,7 +32,7 @@ public class AuthenticationServiceImplTest {
         String user = "user";
         String password = "password";
 
-        AuthenticationService authenticationService = new AuthenticationServiceImpl(loginDao, passwordEncoder, auditDao);
+        AuthenticationService authenticationService = new AuthenticationServiceImpl(loginDao, passwordEncoder, auditDao, consoleReader, userRolesDao, userOffice, reader);
         loginDao.addNewUser(user, passwordEncoder.encode(password));
 
         assertFalse(authenticationService.auth(user, "password" + "someth"));
@@ -46,7 +46,7 @@ public class AuthenticationServiceImplTest {
         String user = "user";
         String password = "password";
 
-        AuthenticationService authenticationService = new AuthenticationServiceImpl(loginDao, passwordEncoder, auditDao);
+        AuthenticationService authenticationService = new AuthenticationServiceImpl(loginDao, passwordEncoder, auditDao, consoleReader, userRolesDao, userOffice, reader);
         loginDao.addNewUser(user, passwordEncoder.encode(password));
 
         assertTrue(authenticationService.auth(user, "password"));
