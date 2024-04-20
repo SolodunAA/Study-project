@@ -1,8 +1,12 @@
 package diary.app.dto;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Objects;
+
+import static java.time.ZoneOffset.UTC;
 
 public class AuditItem {
     private final String user;
@@ -57,7 +61,7 @@ public class AuditItem {
     public String toString() {
         return "AuditItem{" +
                 "user='" + user + '\'' +
-                ", timestamp=" + timestamp +
+                ", timestamp=" + LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), UTC) +
                 ", action='" + action + '\'' +
                 ", userInput='" + userInput + '\'' +
                 '}';
