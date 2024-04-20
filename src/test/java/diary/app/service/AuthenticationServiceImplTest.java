@@ -3,25 +3,33 @@ package diary.app.service;
 import diary.app.auxiliaryfunctions.HashEncoder;
 import diary.app.auxiliaryfunctions.PasswordEncoder;
 import diary.app.dao.AuditDao;
-import diary.app.dao.InMemoryAuditDao;
-import diary.app.dao.InMemoryLoginDao;
+import diary.app.dao.UserRolesDao;
+import diary.app.dao.inmemory.InMemoryAuditDao;
+import diary.app.dao.inmemory.InMemoryLoginDao;
 import diary.app.dao.LoginDao;
+import diary.app.dao.inmemory.InMemoryRolesDao;
+import diary.app.in.ConsoleReader;
+import diary.app.in.Reader;
 import org.junit.Test;
+import org.mockito.Mockito;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class AuthenticationServiceImplTest {
-
+    ConsoleReader crMock = Mockito.mock(ConsoleReader.class);
     @Test
     public void authUnknownUserTest() {
         LoginDao loginDao = new InMemoryLoginDao();
         PasswordEncoder passwordEncoder = new HashEncoder();
         AuditDao auditDao = new InMemoryAuditDao();
 
-        AuthenticationService authenticationService = new AuthenticationServiceImpl(loginDao, passwordEncoder, auditDao, consoleReader, userRolesDao, userOffice, reader);
+        AuthenticationService authenticationService = new AuthenticationServiceImpl(loginDao, passwordEncoder, auditDao, crMock);
 
-        assertFalse(authenticationService.auth("user", "password"));
+        String login = "user1";
+        String password = "password1";
+        Mockito.when(crMock.read()).thenReturn(login, password);
+
+        assertNull(authenticationService.auth());
     }
 
     @Test
@@ -29,13 +37,19 @@ public class AuthenticationServiceImplTest {
         LoginDao loginDao = new InMemoryLoginDao();
         PasswordEncoder passwordEncoder = new HashEncoder();
         AuditDao auditDao = new InMemoryAuditDao();
-        String user = "user";
-        String password = "password";
+        AuthenticationService authenticationService = new AuthenticationServiceImpl(loginDao, passwordEncoder, auditDao, crMock);
+        PasswordEncoder encoder = new HashEncoder();
+        UserRolesDao userRolesDao = new InMemoryRolesDao();
+        RegistrationService registrationService = new RegistrationServiceImpl(encoder, loginDao, userRolesDao, auditDao, crMock);
 
-        AuthenticationService authenticationService = new AuthenticationServiceImpl(loginDao, passwordEncoder, auditDao, consoleReader, userRolesDao, userOffice, reader);
-        loginDao.addNewUser(user, passwordEncoder.encode(password));
+        String loginReg = "user";
+        String passwordReg = "password";
+        String passwordWrong ="1234";
+        Mockito.when(crMock.read()).thenReturn(loginReg, passwordReg, loginReg, passwordWrong);
 
-        assertFalse(authenticationService.auth(user, "password" + "someth"));
+        registrationService.register();
+
+        assertNull(authenticationService.auth());
     }
 
     @Test
@@ -43,12 +57,13 @@ public class AuthenticationServiceImplTest {
         LoginDao loginDao = new InMemoryLoginDao();
         PasswordEncoder passwordEncoder = new HashEncoder();
         AuditDao auditDao = new InMemoryAuditDao();
-        String user = "user";
+
+        AuthenticationService authenticationService = new AuthenticationServiceImpl(loginDao, passwordEncoder, auditDao, crMock);
+
+        String login = "user";
         String password = "password";
+        Mockito.when(crMock.read()).thenReturn(login, password);
 
-        AuthenticationService authenticationService = new AuthenticationServiceImpl(loginDao, passwordEncoder, auditDao, consoleReader, userRolesDao, userOffice, reader);
-        loginDao.addNewUser(user, passwordEncoder.encode(password));
-
-        assertTrue(authenticationService.auth(user, "password"));
+        assertEquals(login, authenticationService.auth());
     }
 }

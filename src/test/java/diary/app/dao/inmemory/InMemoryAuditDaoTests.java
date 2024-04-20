@@ -1,5 +1,6 @@
-package diary.app.dao;
+package diary.app.dao.inmemory;
 
+import diary.app.dao.inmemory.InMemoryAuditDao;
 import diary.app.dto.AuditItem;
 import org.junit.Test;
 

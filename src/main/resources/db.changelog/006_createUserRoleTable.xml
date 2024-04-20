@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+        logicalFilePath="db/changelog.xml">
+    <changeSet id="006_createUserRoleTable.xml" author="Solodun">
+        <createTable tableName="UserRoleTable" schemaName="admin_data">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="login" type="VARCHAR(255)">
+                <constraints unique="true"></constraints>
+            </column>
+            <column name="see_user_trainings" type="BOOLEAN"/>
+            <column name="edit_user_trainings" type="BOOLEAN"/>
+            <column name="see_other_user_trainings" type="BOOLEAN"/>
+            <column name="edit_other_user_trainings" type="BOOLEAN"/>
+            <column name="change_app_settings" type="BOOLEAN"/>
+            <column name="change_user_permission" type="BOOLEAN"/>
+            <column name="get_audit" type="BOOLEAN"/>
+            <column name="exit" type="BOOLEAN"/>
+        </createTable>
+
+    </changeSet>
+
+</databaseChangeLog>

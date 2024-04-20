@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+        logicalFilePath="db/changelog.xml">
+    <changeSet id="009_insertUserRoleTable.xml" author="Solodun">
+        <insert tableName="UserRoleTable" schemaName="admin_data">
+            <column name="login" value="admin"/>
+            <column name="see_user_trainings" value="true"/>
+            <column name="edit_user_trainings" value="true"/>
+            <column name="see_other_user_trainings" value="true"/>
+            <column name="edit_other_user_trainings" value="true"/>
+            <column name="change_app_settings" value="true"/>
+            <column name="change_user_permission" value="true"/>
+            <column name="get_audit" value="true"/>
+            <column name="exit" value="true"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

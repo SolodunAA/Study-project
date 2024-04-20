@@ -1,5 +1,7 @@
-package diary.app.dao;
+package diary.app.dao.inmemory;
 
+import diary.app.dao.TrainingDao;
+import diary.app.dao.inmemory.InMemoryTrainingDao;
 import diary.app.dto.Training;
 import org.junit.Test;
 

@@ -1,5 +1,6 @@
-package diary.app.dao;
+package diary.app.dao.inmemory;
 
+import diary.app.dao.AuditDao;
 import diary.app.dto.AuditItem;
 
 import java.util.ArrayList;

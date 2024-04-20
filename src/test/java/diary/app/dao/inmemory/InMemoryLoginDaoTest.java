@@ -1,5 +1,7 @@
-package diary.app.dao;
+package diary.app.dao.inmemory;
 
+import diary.app.dao.LoginDao;
+import diary.app.dao.inmemory.InMemoryLoginDao;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

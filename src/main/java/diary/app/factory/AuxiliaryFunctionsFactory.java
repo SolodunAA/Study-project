@@ -2,7 +2,6 @@ package diary.app.factory;
 
 import diary.app.auxiliaryfunctions.HashEncoder;
 import diary.app.auxiliaryfunctions.TrainingInteractions;
-import diary.app.dao.InMemoryTrainingDao;
 
 public class AuxiliaryFunctionsFactory {
     private final HashEncoder hashEncoder;

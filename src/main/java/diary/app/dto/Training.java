@@ -1,6 +1,7 @@
 package diary.app.dto;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Training {
     private final LocalDate date;
@@ -45,5 +46,18 @@ public class Training {
                 " | " + timeInMinutes +
                 " | " + calories +
                 " | " + additionalInfo + " || ";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Training training = (Training) o;
+        return Double.compare(timeInMinutes, training.timeInMinutes) == 0 && calories == training.calories && Objects.equals(date, training.date) && Objects.equals(type, training.type) && Objects.equals(additionalInfo, training.additionalInfo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(date, type, timeInMinutes, calories, additionalInfo);
     }
 }

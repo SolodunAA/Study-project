@@ -1,5 +1,6 @@
-package diary.app.dao;
+package diary.app.dao.inmemory;
 
+import diary.app.dao.UserRolesDao;
 import diary.app.dto.Role;
 
 import java.util.HashMap;

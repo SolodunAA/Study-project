@@ -1,5 +1,7 @@
-package diary.app.dao;
+package diary.app.dao.inmemory;
 
+import diary.app.dao.UserRolesDao;
+import diary.app.dao.inmemory.InMemoryRolesDao;
 import diary.app.dto.Role;
 import org.junit.Test;
 

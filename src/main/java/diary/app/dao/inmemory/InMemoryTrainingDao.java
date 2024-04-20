@@ -1,5 +1,6 @@
-package diary.app.dao;
+package diary.app.dao.inmemory;
 
+import diary.app.dao.TrainingDao;
 import diary.app.dto.Training;
 import diary.app.out.ConsolePrinter;
 

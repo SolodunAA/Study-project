@@ -1,5 +1,4 @@
 package diary.app.auxiliaryfunctions;
-import diary.app.dao.InMemoryTrainingDao;
 import diary.app.dao.TrainingDao;
 import diary.app.dto.Training;
 import diary.app.in.Reader;
@@ -94,6 +93,10 @@ public class TrainingInteractions{
         ConsolePrinter.print("Enter 5 if it is additional info");
         String userAnswer = reader.read();
         Training training = trainingDao.getTraining(login, date, type);
+        if (training == null) {
+            ConsolePrinter.print("this training doe not exists");
+            return;
+        }
         trainingDao.deleteTraining(login, date, type);
         LocalDate newDate = training.getDate();
         String newType = training.getType();
