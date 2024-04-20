@@ -54,14 +54,15 @@ public class AuthenticationServiceImplTest {
 
     @Test
     public void authTest() {
+        String login = "user";
+        String password = "password";
         LoginDao loginDao = new InMemoryLoginDao();
         PasswordEncoder passwordEncoder = new HashEncoder();
+        loginDao.addNewUser(login, passwordEncoder.encode(password));
         AuditDao auditDao = new InMemoryAuditDao();
 
         AuthenticationService authenticationService = new AuthenticationServiceImpl(loginDao, passwordEncoder, auditDao, crMock);
 
-        String login = "user";
-        String password = "password";
         Mockito.when(crMock.read()).thenReturn(login, password);
 
         assertEquals(login, authenticationService.auth());

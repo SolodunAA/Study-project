@@ -32,7 +32,7 @@ public class PostgresAuditDao implements AuditDao {
         try (Connection connection = DriverManager.getConnection(url, userName, password)) {
             PreparedStatement ps = SqlUtils.createPreparedStatement(connection, INSERT_AUDIT_ITEM_SQL, schema);
             ps.setString(1, auditItem.getUser());
-            ps.setDate(2, new Date(auditItem.getTimestamp()));
+            ps.setLong(2, auditItem.getTimestamp());
             ps.setString(3, auditItem.getAction());
             ps.setString(4, auditItem.getUserInput());
             ps.executeUpdate();
@@ -66,7 +66,7 @@ public class PostgresAuditDao implements AuditDao {
             ResultSet resultSet = ps.executeQuery();
             while (resultSet.next()) {
                 String login = resultSet.getString("login");
-                long timestamp = resultSet.getDate("time").getTime();
+                long timestamp = resultSet.getLong("time");
                 String action = resultSet.getString("action");
                 String userInput = resultSet.getString("userInput");
                 AuditItem auditItem = new AuditItem(login, timestamp, action, userInput);

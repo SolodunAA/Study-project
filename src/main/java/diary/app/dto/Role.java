@@ -2,6 +2,7 @@ package diary.app.dto;
 
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -56,5 +57,18 @@ public final class Role {
         return "Role{" +
                 "allowedActions=" + allowedActions +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return Objects.equals(allowedActions, role.allowedActions);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(allowedActions);
     }
 }

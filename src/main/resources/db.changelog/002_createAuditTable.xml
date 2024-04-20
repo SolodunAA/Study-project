@@ -11,7 +11,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="login" type="VARCHAR(255)"/>
-            <column name="time" type="DATETIME"/>
+            <column name="time" type="BIGINT"/>
             <column name="action" type="VARCHAR(255)"/>
             <column name="userInput" type="VARCHAR(255)"/>
         </createTable>

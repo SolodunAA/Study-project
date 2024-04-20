@@ -2,6 +2,7 @@ package diary.app.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class AuditItem {
     private final String user;
@@ -39,8 +40,18 @@ public class AuditItem {
         return userInput;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AuditItem auditItem = (AuditItem) o;
+        return timestamp == auditItem.timestamp && Objects.equals(user, auditItem.user) && Objects.equals(action, auditItem.action) && Objects.equals(userInput, auditItem.userInput);
+    }
 
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(user, timestamp, action, userInput);
+    }
 
     @Override
     public String toString() {
