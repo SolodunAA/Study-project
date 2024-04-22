@@ -1,5 +1,6 @@
 package diary.app.dao.postgres;
 
+import diary.app.dao.LoginDao;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -10,14 +11,16 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class PostgresLoginDaoTest {
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
             "postgres:15-alpine"
     );
+
+    private final LoginDao dao = new PostgresLoginDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "admin_data");
 
     @BeforeClass
     public static void beforeAll() {
@@ -49,7 +52,7 @@ public class PostgresLoginDaoTest {
     public void clearDb() {
         try (Connection connection = DriverManager.getConnection(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())) {
             var st = connection.createStatement();
-            st.execute("TRUNCATE TABLE admin_data.\"LoginPasswordTable\"");
+            st.execute("TRUNCATE TABLE admin_data.login_table CASCADE");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -57,20 +60,23 @@ public class PostgresLoginDaoTest {
 
     @Test
     public void addNewUserTest() {
-        var dao = new PostgresLoginDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "admin_data");
         dao.addNewUser("login1", 111);
         assertTrue(dao.checkIfUserExist("login1"));
     }
 
     @Test
+    public void addDuplicateUserTest() {
+        dao.addNewUser("login1", 111);
+        assertThrows(RuntimeException.class, () -> dao.addNewUser("login1", 222));
+    }
+
+    @Test
     public void getEncodedPasswordTest() {
-        var dao = new PostgresLoginDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "admin_data");
         dao.addNewUser("login1", 111);
         assertEquals(111, dao.getEncodedPassword("login1"));
     }
     @Test
     public void checkIfUserExistTest() {
-        var dao = new PostgresLoginDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "admin_data");
         String login = "login";
         int passwordEncoded = 111;
         dao.addNewUser(login, passwordEncoded);

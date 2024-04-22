@@ -5,13 +5,16 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
         logicalFilePath="db/changelog.xml">
-    <changeSet id="006_createUserRoleTable.xml" author="Solodun">
-        <createTable tableName="UserRoleTable" schemaName="admin_data">
-            <column name="id" type="BIGINT" autoIncrement="true">
+    <changeSet id="005_create_user_role_table.xml" author="Solodun">
+        <createSequence sequenceName="roles_id_seq" schemaName="admin_data"
+                        minValue="1"
+                        dataType="BIGINT"/>
+        <createTable tableName="user_role_table" schemaName="admin_data" remarks="allowed user roles. column name is action, value is flag">
+            <column name="roles_id" type="BIGINT" defaultValueComputed="nextval('admin_data.roles_id_seq')">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="login" type="VARCHAR(255)">
-                <constraints unique="true"></constraints>
+            <column name="login_id" type="BIGINT">
+                <constraints unique="true" nullable="false"/>
             </column>
             <column name="see_user_trainings" type="BOOLEAN"/>
             <column name="edit_user_trainings" type="BOOLEAN"/>
@@ -22,6 +25,7 @@
             <column name="get_audit" type="BOOLEAN"/>
             <column name="exit" type="BOOLEAN"/>
         </createTable>
+
 
     </changeSet>
 

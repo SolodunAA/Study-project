@@ -6,11 +6,9 @@ import diary.app.out.ConsolePrinter;
 import org.postgresql.util.PSQLException;
 
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class PostgresTrainingDao implements TrainingDao {
 
@@ -19,45 +17,57 @@ public class PostgresTrainingDao implements TrainingDao {
     private final String password;
     private final String schema;
 
-    private final static String INSERT_NEW_TRAINING_SQL =
-            "INSERT INTO :SCHEMA.\"TrainingsTable\" " +
-                    "(login, date, \"trainingType\", time, calories, \"extraInfo\") " +
-                    "VALUES (?,?,?,?,?,?)";
+    private final static String INSERT_NEW_TRAINING_SQL = """
+                    INSERT INTO :SCHEMA.trainings_table
+                    (login_id, date, training_type_id, time, calories, extra_info)
+                    VALUES ((SELECT login_id FROM admin_data.login_table WHERE login = ?),?,
+                    (SELECT training_type_id FROM :SCHEMA.trainings_type_table WHERE training_type = ?),?,?,?)
+            """;
 
-    private final static String RETRIEVE_TRAINING_RECORD_SQL =
-            "SELECT time, calories, \"extraInfo\" " +
-            "FROM :SCHEMA.\"TrainingsTable\" " +
-                "WHERE " +
-                "login = ? " +
-                "AND date = ? " +
-                "AND \"trainingType\" = ?";
-    private final static String DELETE_TRAINING_RECORD_SQL =
-            "DELETE FROM :SCHEMA.\"TrainingsTable\" " +
-            "WHERE " +
-                "login = ? " +
-                "AND date = ? " +
-                "AND \"trainingType\" = ?";
-    private final static String RETRIEVE_ALL_TRAINING_RECORD_SQL =
-            "SELECT date, \"trainingType\", time, calories, \"extraInfo\" " +
-            "FROM :SCHEMA.\"TrainingsTable\" " +
-            "WHERE login = ? " +
-            "ORDER BY date";
-    private final static String RETRIEVE_ALL_TRAINING_RECORD_FOR_PERIOD_SQL =
-            "SELECT date, \"trainingType\", time, calories, \"extraInfo\" " +
-            "FROM :SCHEMA.\"TrainingsTable\" " +
-            "WHERE " +
-                "login = ? " +
-                "AND date BETWEEN ? AND ? " +
-            "ORDER BY date";
+    private final static String RETRIEVE_TRAINING_RECORD_SQL = """
+            SELECT time, calories, extra_info
+            FROM :SCHEMA.trainings_table
+            JOIN admin_data.login_table USING(login_id)
+            JOIN :SCHEMA.trainings_type_table USING(training_type_id)
+            WHERE
+            login = ?
+            AND date = ?
+            AND training_type = ?
+            """;
+    private final static String DELETE_TRAINING_RECORD_SQL = """
+            DELETE FROM :SCHEMA.trainings_table
+            WHERE
+            login_id = (SELECT login_id FROM admin_data.login_table WHERE login = ?)
+            AND date = ?
+            AND training_type_id = (SELECT training_type_id FROM :SCHEMA.trainings_type_table WHERE training_type = ?)
+            """;
+    private final static String RETRIEVE_ALL_TRAINING_RECORD_SQL = """
+            SELECT date, training_type, time, calories, extra_info
+            FROM :SCHEMA.trainings_table
+            JOIN admin_data.login_table USING(login_id)
+            JOIN :SCHEMA.trainings_type_table USING(training_type_id)
+            WHERE login = ?
+            ORDER BY date
+            """;
+    private final static String RETRIEVE_ALL_TRAINING_RECORD_FOR_PERIOD_SQL = """
+            SELECT date, training_type, time, calories, extra_info
+            FROM :SCHEMA.trainings_table
+            JOIN admin_data.login_table USING(login_id)
+            JOIN :SCHEMA.trainings_type_table USING(training_type_id)
+            WHERE login = ?
+            AND date BETWEEN ? AND ?
+            ORDER BY date
+            """;
     private final static String RETRIEVE_TRAINING_TYPES_SQL =
-            "SELECT \"trainingType\" " +
-            "FROM :SCHEMA.\"TrainingsTypeTable\"";
-    private final static String INSERT_NEW_TRAINING_TYPE_SQL =
-            "INSERT INTO :SCHEMA.\"TrainingsTypeTable\" " +
-            "(\"trainingType\") VALUES (?)";
-    private final static String DELETE_TRAINING_TYPE_SQL =
-            "DELETE FROM :SCHEMA.\"TrainingsTypeTable\" " +
-            "WHERE \"trainingType\" = ?";
+            "SELECT training_type FROM :SCHEMA.trainings_type_table ";
+    private final static String INSERT_NEW_TRAINING_TYPE_SQL = """
+            INSERT INTO :SCHEMA.trainings_type_table
+            (training_type) VALUES (?)
+            """;
+    private final static String DELETE_TRAINING_TYPE_SQL = """
+            DELETE FROM :SCHEMA.trainings_type_table
+            WHERE training_type = ?
+            """;
 
     public PostgresTrainingDao(String url, String userName, String password, String schema) {
         this.url = url;
@@ -66,11 +76,10 @@ public class PostgresTrainingDao implements TrainingDao {
         this.schema = schema;
     }
 
-
     @Override
     public void addNewTraining(String login, Training tng) {
-        try (Connection connection = DriverManager.getConnection(url, userName, password)) {
-            PreparedStatement ps = SqlUtils.createPreparedStatement(connection, INSERT_NEW_TRAINING_SQL, schema);
+        try (Connection connection = DriverManager.getConnection(url, userName, password);
+             PreparedStatement ps = SqlUtils.createPreparedStatement(connection, INSERT_NEW_TRAINING_SQL, schema)) {
             ps.setString(1, login);
             ps.setDate(2, Date.valueOf(tng.getDate()));
             ps.setString(3, tng.getType());
@@ -85,15 +94,14 @@ public class PostgresTrainingDao implements TrainingDao {
                 throw new RuntimeException(e);
             }
         } catch (Exception e) {
-            //System.out.println("");
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public Training getTraining(String login, LocalDate date, String type) {
-        try (Connection connection = DriverManager.getConnection(url, userName, password)) {
-            PreparedStatement ps = SqlUtils.createPreparedStatement(connection, RETRIEVE_TRAINING_RECORD_SQL, schema);
+    public Optional<Training> getTraining(String login, LocalDate date, String type) {
+        try (Connection connection = DriverManager.getConnection(url, userName, password);
+             PreparedStatement ps = SqlUtils.createPreparedStatement(connection, RETRIEVE_TRAINING_RECORD_SQL, schema)) {
             ps.setString(1, login);
             ps.setDate(2, Date.valueOf(date));
             ps.setString(3, type);
@@ -102,11 +110,12 @@ public class PostgresTrainingDao implements TrainingDao {
             if (resultSet.next()) {
                 double time = resultSet.getDouble("time");
                 int calories = resultSet.getInt("calories");
-                String extraInfo = resultSet.getString("extraInfo");
-                return new Training(date, type, time, calories, extraInfo);
+                String extraInfo = resultSet.getString("extra_info");
+                var training = new Training(date, type, time, calories, extraInfo);
+                return Optional.of(training);
             } else {
                 ConsolePrinter.print("training does not exist");
-                return null;
+                return Optional.empty();
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -115,8 +124,8 @@ public class PostgresTrainingDao implements TrainingDao {
 
     @Override
     public void deleteTraining(String login, LocalDate date, String type) {
-        try (Connection connection = DriverManager.getConnection(url, userName, password)) {
-            PreparedStatement ps = SqlUtils.createPreparedStatement(connection, DELETE_TRAINING_RECORD_SQL, schema);
+        try (Connection connection = DriverManager.getConnection(url, userName, password);
+             PreparedStatement ps = SqlUtils.createPreparedStatement(connection, DELETE_TRAINING_RECORD_SQL, schema)) {
             ps.setString(1, login);
             ps.setDate(2, Date.valueOf(date));
             ps.setString(3, type);
@@ -129,16 +138,16 @@ public class PostgresTrainingDao implements TrainingDao {
     @Override
     public List<Training> getAllTrainings(String login) {
         List<Training> list = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(url, userName, password)) {
-            PreparedStatement ps = SqlUtils.createPreparedStatement(connection, RETRIEVE_ALL_TRAINING_RECORD_SQL, schema);
+        try (Connection connection = DriverManager.getConnection(url, userName, password);
+             PreparedStatement ps = SqlUtils.createPreparedStatement(connection, RETRIEVE_ALL_TRAINING_RECORD_SQL, schema)) {
             ps.setString(1, login);
             ResultSet resultSet = ps.executeQuery();
             while (resultSet.next()) {
                 LocalDate date = resultSet.getDate("date").toLocalDate();
-                String type = resultSet.getString("trainingType");
+                String type = resultSet.getString("training_type");
                 double time = resultSet.getDouble("time");
                 int calories = resultSet.getInt("calories");
-                String extraInfo = resultSet.getString("extraInfo");
+                String extraInfo = resultSet.getString("extra_info");
                 Training training = new Training(date, type, time, calories, extraInfo);
                 list.add(training);
             }
@@ -152,19 +161,18 @@ public class PostgresTrainingDao implements TrainingDao {
     @Override
     public List<Training> getTrainingsFromThePeriod(String login, LocalDate startDate, LocalDate endDate) {
         List<Training> list = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(url, userName, password)) {
-
-            PreparedStatement ps = SqlUtils.createPreparedStatement(connection, RETRIEVE_ALL_TRAINING_RECORD_FOR_PERIOD_SQL, schema);
+        try (Connection connection = DriverManager.getConnection(url, userName, password);
+             PreparedStatement ps = SqlUtils.createPreparedStatement(connection, RETRIEVE_ALL_TRAINING_RECORD_FOR_PERIOD_SQL, schema)) {
             ps.setString(1, login);
             ps.setDate(2, Date.valueOf(startDate));
             ps.setDate(3, Date.valueOf(endDate));
             ResultSet resultSet = ps.executeQuery();
             while (resultSet.next()) {
                 LocalDate date = resultSet.getDate("date").toLocalDate();
-                String type = resultSet.getString("trainingType");
+                String type = resultSet.getString("training_type");
                 double time = resultSet.getDouble("time");
                 int calories = resultSet.getInt("calories");
-                String extraInfo = resultSet.getString("extraInfo");
+                String extraInfo = resultSet.getString("extra_info");
                 Training training = new Training(date, type, time, calories, extraInfo);
                 list.add(training);
             }
@@ -177,11 +185,11 @@ public class PostgresTrainingDao implements TrainingDao {
 
     public Set<String> getTrainingTypes() {
         Set<String> set = new HashSet<>();
-        try (Connection connection = DriverManager.getConnection(url, userName, password)) {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(SqlUtils.setSchema(RETRIEVE_TRAINING_TYPES_SQL, schema));
+        try (Connection connection = DriverManager.getConnection(url, userName, password);
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(SqlUtils.setSchema(RETRIEVE_TRAINING_TYPES_SQL, schema))) {
             while (resultSet.next()) {
-                String type = resultSet.getString("trainingType");
+                String type = resultSet.getString("training_type");
                 set.add(type);
             }
 
@@ -193,8 +201,8 @@ public class PostgresTrainingDao implements TrainingDao {
 
     @Override
     public void addTrainingType(String trainingType) {
-        try (Connection connection = DriverManager.getConnection(url, userName, password)) {
-            PreparedStatement ps = SqlUtils.createPreparedStatement(connection, INSERT_NEW_TRAINING_TYPE_SQL, schema);
+        try (Connection connection = DriverManager.getConnection(url, userName, password);
+             PreparedStatement ps = SqlUtils.createPreparedStatement(connection, INSERT_NEW_TRAINING_TYPE_SQL, schema)) {
             ps.setString(1, trainingType);
             ps.executeUpdate();
         } catch (Exception e) {
@@ -204,8 +212,8 @@ public class PostgresTrainingDao implements TrainingDao {
 
     @Override
     public void deleteTrainingType(String trainingType) {
-        try (Connection connection = DriverManager.getConnection(url, userName, password)) {
-            PreparedStatement ps = SqlUtils.createPreparedStatement(connection, DELETE_TRAINING_TYPE_SQL, schema);
+        try (Connection connection = DriverManager.getConnection(url, userName, password);
+             PreparedStatement ps = SqlUtils.createPreparedStatement(connection, DELETE_TRAINING_TYPE_SQL, schema)) {
             ps.setString(1, trainingType);
             ps.executeUpdate();
         } catch (Exception e) {

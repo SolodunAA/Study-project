@@ -5,12 +5,12 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
         logicalFilePath="db/changelog.xml">
-    <changeSet id="001_createSchemas" author="Solodun">
-        <sql endDelimiter=";">
-            CREATE SCHEMA admin_data
-        </sql>
-        <sql endDelimiter=";">
-            CREATE SCHEMA dairy
-        </sql>
+    <changeSet id="009_insert_login_table.xml" author="Solodun">
+        <insert tableName="login_table" schemaName="admin_data">
+            <column name="login_id" valueSequenceNext="login_id_seq"/>
+            <column name="login" value="admin"/>
+        </insert>
+
     </changeSet>
+
 </databaseChangeLog>

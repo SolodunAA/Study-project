@@ -1,5 +1,7 @@
 package diary.app.dao.postgres;
 
+import diary.app.dao.LoginDao;
+import diary.app.dao.TrainingDao;
 import diary.app.dto.Training;
 import liquibase.Liquibase;
 import liquibase.database.Database;
@@ -9,7 +11,6 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import org.junit.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-import java.sql.ClientInfoStatus;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.time.LocalDate;
@@ -24,6 +25,8 @@ public class PostgresTrainingDaoTest {
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
             "postgres:15-alpine"
     );
+    private final TrainingDao trainingDao = new PostgresTrainingDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "dairy");
+    private final LoginDao loginDao = new PostgresLoginDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "admin_data");
 
     @BeforeClass
     public static void beforeAll() {
@@ -40,7 +43,7 @@ public class PostgresTrainingDaoTest {
                     new Liquibase("db.changelog/changelog.xml", new ClassLoaderResourceAccessor(), database);
             liquibase.update();
             System.out.println("migration finished successfully");
-        } catch (Exception e ){
+        } catch (Exception e) {
             System.out.println("Got SQL Exception " + e.getMessage());
             throw new RuntimeException(e);
         }
@@ -52,24 +55,27 @@ public class PostgresTrainingDaoTest {
     }
 
     @Before
-    public void clearDb() {
+    public void prepareBeforeTest() {
+        clearDb();
+        loginDao.addNewUser("login", 111);
+        trainingDao.addTrainingType("swimming");
+        trainingDao.addTrainingType("gym");
+        trainingDao.addTrainingType("jogging");
+    }
+
+    private void clearDb() {
         try (Connection connection = DriverManager.getConnection(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())) {
             var st = connection.createStatement();
-            st.execute("TRUNCATE TABLE dairy.\"TrainingsTable\"");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        try (Connection connection = DriverManager.getConnection(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())) {
-            var st = connection.createStatement();
-            st.execute("TRUNCATE TABLE dairy.\"TrainingsTypeTable\"");
+            st.execute("TRUNCATE TABLE dairy.trainings_type_table CASCADE");
+            var st2 = connection.createStatement();
+            st2.execute("TRUNCATE TABLE admin_data.login_table CASCADE");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @Test
-    public void addNewUserTest() {
-        var dao = new PostgresTrainingDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "dairy");
+    public void addNewTrainingTest() {
         String login = "login";
         LocalDate date = LocalDate.parse("2024-04-20");
         String type = "swimming";
@@ -80,14 +86,13 @@ public class PostgresTrainingDaoTest {
         List<Training> list = new ArrayList<>();
 
         list.add(training);
-        dao.addTrainingType(type);
-        dao.addNewTraining(login, training);
+        trainingDao.addNewTraining(login, training);
 
-        assertEquals(list, dao.getAllTrainings(login));
+        assertEquals(list, trainingDao.getAllTrainings(login));
     }
+
     @Test
     public void getTrainingTest() {
-        var dao = new PostgresTrainingDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "dairy");
         String login = "login";
         LocalDate date = LocalDate.parse("2024-04-20");
         String type = "swimming";
@@ -95,15 +100,13 @@ public class PostgresTrainingDaoTest {
         int calories = 150;
         String addInfo = "no";
         Training training = new Training(date, type, time, calories, addInfo);
+        trainingDao.addNewTraining(login, training);
 
-        dao.addTrainingType(type);
-        dao.addNewTraining(login, training);
-
-        assertEquals(training, dao.getTraining(login, date, type));
+        assertEquals(training, trainingDao.getTraining(login, date, type).orElseThrow());
     }
+
     @Test
     public void deleteTrainingTest() {
-        var dao = new PostgresTrainingDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "dairy");
         String login = "login";
         LocalDate date = LocalDate.parse("2024-04-20");
         String type = "swimming";
@@ -112,25 +115,21 @@ public class PostgresTrainingDaoTest {
         String addInfo = "no";
         Training training = new Training(date, type, time, calories, addInfo);
 
-        dao.addTrainingType(type);
-        dao.addNewTraining(login, training);
-        dao.deleteTraining(login, date, type);
+        trainingDao.addNewTraining(login, training);
+        trainingDao.deleteTraining(login, date, type);
 
-        assertFalse(dao.getAllTrainings(login).contains(training));
+        assertFalse(trainingDao.getAllTrainings(login).contains(training));
     }
+
     @Test
     public void getAllTrainingTest() {
-        var dao = new PostgresTrainingDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "dairy");
-
         String login = "login";
-
         LocalDate date1 = LocalDate.parse("2024-04-20");
         String type1 = "swimming";
         int time1 = 45;
         int calories1 = 150;
         String addInfo1 = "no";
         Training training1 = new Training(date1, type1, time1, calories1, addInfo1);
-
 
         LocalDate date2 = LocalDate.parse("2024-04-15");
         String type2 = "gym";
@@ -141,19 +140,16 @@ public class PostgresTrainingDaoTest {
 
         List<Training> list = new ArrayList<>();
 
-        dao.addTrainingType(type1);
-        dao.addTrainingType(type2);
-        dao.addNewTraining(login, training1);
-        dao.addNewTraining(login, training2);
+        trainingDao.addNewTraining(login, training1);
+        trainingDao.addNewTraining(login, training2);
         list.add(training2);
         list.add(training1);
 
-        assertEquals(list, dao.getAllTrainings(login));
+        assertEquals(list, trainingDao.getAllTrainings(login));
     }
+
     @Test
     public void getTrainingFromThePeriodTest() {
-        var dao = new PostgresTrainingDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "dairy");
-
         String login = "login";
         LocalDate dateStart = LocalDate.parse("2024-01-01");
         LocalDate dateEnd = LocalDate.parse("2025-01-01");
@@ -181,28 +177,25 @@ public class PostgresTrainingDaoTest {
 
         List<Training> list = new ArrayList<>();
 
-        dao.addTrainingType(type1);
-        dao.addTrainingType(type2);
-        dao.addTrainingType(type3);
-        dao.addNewTraining(login, training1);
-        dao.addNewTraining(login, training2);
-        dao.addNewTraining(login, training3);
+        trainingDao.addNewTraining(login, training1);
+        trainingDao.addNewTraining(login, training2);
+        trainingDao.addNewTraining(login, training3);
         list.add(training2);
         list.add(training1);
 
-        assertEquals(list, dao.getTrainingsFromThePeriod(login, dateStart, dateEnd));
+        assertEquals(list, trainingDao.getTrainingsFromThePeriod(login, dateStart, dateEnd));
     }
+
     @Test
     public void getTrainingTypeTest() {
-        var dao = new PostgresTrainingDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "dairy");
-
+        clearDb();
         String type1 = "swimming";
         String type2 = "gym";
         String type3 = "jogging";
 
-        dao.addTrainingType(type1);
-        dao.addTrainingType(type2);
-        dao.addTrainingType(type3);
+        trainingDao.addTrainingType(type1);
+        trainingDao.addTrainingType(type2);
+        trainingDao.addTrainingType(type3);
 
         Set<String> set = new HashSet<>();
 
@@ -210,29 +203,30 @@ public class PostgresTrainingDaoTest {
         set.add(type2);
         set.add(type3);
 
-        assertEquals(set, dao.getTrainingTypes());
+        assertEquals(set, trainingDao.getTrainingTypes());
     }
+
     @Test
     public void addTrainingTypeTest() {
-        var dao = new PostgresTrainingDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "dairy");
+        clearDb();
         String type1 = "swimming";
-        dao.addTrainingType(type1);
-        assertTrue(dao.getTrainingTypes().contains(type1));
+        trainingDao.addTrainingType(type1);
+        assertTrue(trainingDao.getTrainingTypes().contains(type1));
     }
+
     @Test
     public void deleteTrainingTypeTest() {
-        var dao = new PostgresTrainingDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "dairy");
+        clearDb();
         String type1 = "swimming";
         String type2 = "gym";
         String type3 = "jogging";
 
-        dao.addTrainingType(type1);
-        dao.addTrainingType(type2);
-        dao.addTrainingType(type3);
+        trainingDao.addTrainingType(type1);
+        trainingDao.addTrainingType(type2);
+        trainingDao.addTrainingType(type3);
 
-        dao.deleteTrainingType(type1);
+        trainingDao.deleteTrainingType(type1);
 
-        assertFalse(dao.getTrainingTypes().contains(type1));
+        assertFalse(trainingDao.getTrainingTypes().contains(type1));
     }
-
 }

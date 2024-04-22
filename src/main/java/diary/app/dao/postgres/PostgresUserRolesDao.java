@@ -15,28 +15,32 @@ public class PostgresUserRolesDao implements UserRolesDao {
     private final String password;
     private final String schema;
 
-    private final static String INSERT_USER_ROLE_SQL = "INSERT INTO :SCHEMA.\"UserRoleTable\" " +
-            "(login, " +
-            "see_user_trainings, " +
-            "edit_user_trainings, " +
-            "see_other_user_trainings, " +
-            "edit_other_user_trainings, " +
-            "change_app_settings, " +
-            "change_user_permission, " +
-            "get_audit, " +
-            "exit) " +
-            "VALUES (?,?,?,?,?,?,?,?,?)";
-    private final static String RETRIEVE_USER_ROLE_SQL = "SELECT " +
-            "see_user_trainings, " +
-            "edit_user_trainings, " +
-            "see_other_user_trainings, " +
-            "edit_other_user_trainings, " +
-            "change_app_settings, " +
-            "change_user_permission, " +
-            "get_audit, " +
-            "exit " +
-            "FROM :SCHEMA.\"UserRoleTable\" " +
-            "WHERE login = ?";
+    private final static String INSERT_USER_ROLE_SQL = """
+            INSERT INTO :SCHEMA."user_role_table"
+            (login_id,
+            see_user_trainings,
+            edit_user_trainings,
+            see_other_user_trainings,
+            edit_other_user_trainings,
+            change_app_settings,
+            change_user_permission,
+            get_audit,
+            exit)
+            VALUES ((SELECT login_id FROM :SCHEMA.login_table WHERE login = ?),?,?,?,?,?,?,?,?)
+            """;
+    private final static String RETRIEVE_USER_ROLE_SQL = """
+            SELECT
+            see_user_trainings,
+            edit_user_trainings,
+            see_other_user_trainings,
+            edit_other_user_trainings,
+            change_app_settings,
+            change_user_permission,
+            get_audit,
+            exit
+            FROM :SCHEMA."user_role_table"
+            WHERE login_id = (SELECT login_id FROM :SCHEMA.login_table WHERE login = ?)
+            """;
 
     public PostgresUserRolesDao(String url, String userName, String password, String schema) {
         this.url = url;
@@ -47,8 +51,9 @@ public class PostgresUserRolesDao implements UserRolesDao {
 
     @Override
     public void addRoleForUser(String login, Role role) {
-        try (Connection connection = DriverManager.getConnection(url, userName, password)) {
-            PreparedStatement ps = SqlUtils.createPreparedStatement(connection, INSERT_USER_ROLE_SQL, schema);
+        try (Connection connection = DriverManager.getConnection(url, userName, password);
+             PreparedStatement ps = SqlUtils.createPreparedStatement(connection, INSERT_USER_ROLE_SQL, schema)) {
+
             ps.setString(1, login);
             ps.setBoolean(2, role.getAllowedActions().contains(UserAction.SEE_USER_TRAININGS));
             ps.setBoolean(3, role.getAllowedActions().contains(UserAction.EDIT_USER_TRAININGS));
@@ -68,8 +73,8 @@ public class PostgresUserRolesDao implements UserRolesDao {
     @Override
     public Role getUserRole(String login) {
         Set<UserAction> set = new HashSet<>();
-        try (Connection connection = DriverManager.getConnection(url, userName, password)) {
-            PreparedStatement ps = SqlUtils.createPreparedStatement(connection, RETRIEVE_USER_ROLE_SQL, schema);;
+        try (Connection connection = DriverManager.getConnection(url, userName, password);
+             PreparedStatement ps = SqlUtils.createPreparedStatement(connection, RETRIEVE_USER_ROLE_SQL, schema);) {
             ps.setString(1, login);
             ResultSet resultSet = ps.executeQuery();
             resultSet.next();

@@ -5,17 +5,24 @@ import diary.app.dao.LoginDao;
 import java.sql.*;
 
 public class PostgresLoginDao implements LoginDao {
-    private static final String SELECT_COUNT_PASSWORD =
-            "SELECT count(*) " +
-                    "FROM :SCHEMA.\"LoginPasswordTable\" " +
-                    "WHERE login = ?";
-    private static final String INSERT_LOGIN_AND_PASSWORD =
-            "INSERT INTO :SCHEMA.\"LoginPasswordTable\" " +
-                    "(login, \"encodedPassword\") VALUES (?,?)";
-    private static final String SELECT_PASSWORD =
-            "SELECT \"encodedPassword\" " +
-                    "FROM :SCHEMA.\"LoginPasswordTable\" " +
-                    "WHERE login = ?";
+    private static final String LOGIN_EXISTS = """
+            SELECT count(*)
+            FROM :SCHEMA.login_table
+            WHERE login = ?
+            """;
+    private static final String INSERT_LOGIN = """
+            INSERT INTO :SCHEMA.login_table
+            (login) VALUES (?)
+            """;
+    private static final String INSERT_LOGIN_AND_PASSWORD = """
+            INSERT INTO :SCHEMA.login_password_table
+            (login_id, encoded_password) VALUES ((SELECT login_id FROM :SCHEMA.login_table WHERE login = ?),?)
+            """;
+    private static final String SELECT_PASSWORD = """
+            SELECT encoded_password
+            FROM :SCHEMA.login_password_table
+            WHERE login_id = (SELECT login_id FROM :SCHEMA.login_table WHERE login = ?)
+            """;
     private final String url;
     private final String userName;
     private final String password;
@@ -30,8 +37,8 @@ public class PostgresLoginDao implements LoginDao {
 
     @Override
     public boolean checkIfUserExist(String login) {
-        try (Connection connection = DriverManager.getConnection(url, userName, password)) {
-            PreparedStatement ps = SqlUtils.createPreparedStatement(connection, SELECT_COUNT_PASSWORD, schema);
+        try (Connection connection = DriverManager.getConnection(url, userName, password);
+             PreparedStatement ps = SqlUtils.createPreparedStatement(connection, LOGIN_EXISTS, schema)) {
             ps.setString(1, login);
             ResultSet resultSet = ps.executeQuery();
             resultSet.next();
@@ -43,11 +50,14 @@ public class PostgresLoginDao implements LoginDao {
 
     @Override
     public void addNewUser(String login, int encodedPswd) {
-        try (Connection connection = DriverManager.getConnection(url, userName, password)) {
-            PreparedStatement ps = SqlUtils.createPreparedStatement(connection, INSERT_LOGIN_AND_PASSWORD, schema);
-            ps.setString(1, login);
-            ps.setInt(2, encodedPswd);
-            ps.executeUpdate();
+        try (Connection connection = DriverManager.getConnection(url, userName, password);
+             PreparedStatement ps1 = SqlUtils.createPreparedStatement(connection, INSERT_LOGIN, schema);
+             PreparedStatement ps2 = SqlUtils.createPreparedStatement(connection, INSERT_LOGIN_AND_PASSWORD, schema)) {
+            ps1.setString(1, login);
+            ps1.executeUpdate();
+            ps2.setString(1, login);
+            ps2.setInt(2, encodedPswd);
+            ps2.executeUpdate();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -55,14 +65,12 @@ public class PostgresLoginDao implements LoginDao {
 
     @Override
     public int getEncodedPassword(String login) {
-        try (Connection connection = DriverManager.getConnection(url, userName, password)) {
-
-            PreparedStatement ps = SqlUtils.createPreparedStatement(connection, SELECT_PASSWORD, schema);
+        try (Connection connection = DriverManager.getConnection(url, userName, password);
+             PreparedStatement ps = SqlUtils.createPreparedStatement(connection, SELECT_PASSWORD, schema)) {
             ps.setString(1, login);
             ResultSet resultSet = ps.executeQuery();
-
             resultSet.next();
-            return resultSet.getInt("encodedPassword");
+            return resultSet.getInt("encoded_password");
 
         } catch (Exception e) {
             throw new RuntimeException(e);

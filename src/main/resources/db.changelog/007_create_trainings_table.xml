@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+        logicalFilePath="db/changelog.xml">
+    <changeSet id="007_create_trainings_table.xml" author="Solodun">
+        <createSequence sequenceName="trainings_id_seq" schemaName="dairy"
+                        minValue="1"
+                        dataType="BIGINT"/>
+        <createTable tableName="trainings_table" schemaName="dairy" remarks="trainings info">
+            <column name="trainings_id" type="BIGINT" defaultValueComputed="nextval('dairy.trainings_id_seq')" remarks="training unique id">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="login_id" type="BIGINT" remarks="FK with login table">
+                <constraints unique="true" uniqueConstraintName="pair_unique" nullable="false"/>
+            </column>
+            <column name="date" type="DATE">
+                <constraints unique="true" uniqueConstraintName="pair_unique" nullable="false"/>
+            </column>
+            <column name="training_type_id" type="INT" remarks="FK with training type table">
+                <constraints unique="true" uniqueConstraintName="pair_unique" nullable="false"/>
+            </column>
+            <column name="time" type="INT"/>
+            <column name="calories" type="INT"/>
+            <column name="extra_info" type="VARCHAR(255)"/>
+        </createTable>
+
+    </changeSet>
+
+</databaseChangeLog>

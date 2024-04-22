@@ -5,9 +5,10 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
         logicalFilePath="db/changelog.xml">
-    <changeSet id="009_insertUserRoleTable.xml" author="Solodun">
-        <insert tableName="UserRoleTable" schemaName="admin_data">
-            <column name="login" value="admin"/>
+    <changeSet id="011_insert_user_role_table.xml" author="Solodun">
+        <insert tableName="user_role_table" schemaName="admin_data">
+            <column name="roles_id" valueSequenceNext="roles_id_seq"/>
+            <column name="login_id" value = "1"/>
             <column name="see_user_trainings" value="true"/>
             <column name="edit_user_trainings" value="true"/>
             <column name="see_other_user_trainings" value="true"/>

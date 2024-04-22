@@ -18,6 +18,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class PostgresAuditDaoTest {
+
+    private final PostgresAuditDao dao = new PostgresAuditDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "admin_data");
+    private final PostgresLoginDao postgresLoginDao = new PostgresLoginDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "admin_data");
+
+
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
             "postgres:15-alpine"
     );
@@ -50,9 +55,9 @@ public class PostgresAuditDaoTest {
 
     @Before
     public void clearDb() {
-        try (Connection connection = DriverManager.getConnection(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())) {
-            var st = connection.createStatement();
-            st.execute("TRUNCATE TABLE admin_data.\"AuditTable\"");
+        try (Connection connection = DriverManager.getConnection(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
+             var st = connection.createStatement()) {
+            st.execute("TRUNCATE TABLE admin_data.login_table CASCADE");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -60,29 +65,32 @@ public class PostgresAuditDaoTest {
 
     @Test
     public void addAndGetAuditDaoTest() {
-        var dao = new PostgresAuditDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "admin_data");
         String login = "user";
         String action = "registraton";
         String userInput = "user";
+
+        postgresLoginDao.addNewUser(login, 111);
 
         AuditItem auditItem = new AuditItem(login, action, userInput);
         dao.addAuditItem(auditItem);
 
         assertTrue(dao.getAuditItems(dao.AuditItemsSize()).contains(auditItem));
     }
+
     @Test
     public void getAuditDaoTest() {
-        var dao = new PostgresAuditDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "admin_data");
         String login1 = "user";
         String action1 = "registraton";
         String userInput1 = "user";
 
+        postgresLoginDao.addNewUser(login1, 111);
         AuditItem auditItem1 = new AuditItem(login1, action1, userInput1);
 
         String login2 = "admin";
         String action2 = "changeInfo";
         String userInput2 = "setNewType";
 
+        postgresLoginDao.addNewUser(login2, 112);
         AuditItem auditItem2 = new AuditItem(login2, action2, userInput2);
 
         dao.addAuditItem(auditItem1);
@@ -94,18 +102,20 @@ public class PostgresAuditDaoTest {
 
         assertEquals(list, dao.getAuditItems(dao.AuditItemsSize()));
     }
+
     @Test
     public void getAuditItemsSizeTest() {
-        var dao = new PostgresAuditDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "admin_data");
         String login1 = "user";
         String action1 = "registraton";
         String userInput1 = "user";
+        postgresLoginDao.addNewUser(login1, 111);
 
         AuditItem auditItem1 = new AuditItem(login1, action1, userInput1);
 
         String login2 = "admin";
         String action2 = "changeInfo";
         String userInput2 = "setNewType";
+        postgresLoginDao.addNewUser(login2, 112);
 
         AuditItem auditItem2 = new AuditItem(login2, action2, userInput2);
 

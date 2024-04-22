@@ -18,7 +18,7 @@ public class InMemoryTrainingDaoTest {
         LocalDate date = LocalDate.parse("2024-04-12");
         String type = "swimming";
 
-        assertNull(trainingDao.getTraining(login, date, type));
+        assertTrue(trainingDao.getTraining(login, date, type).isEmpty());
     }
 
     @Test
@@ -33,7 +33,7 @@ public class InMemoryTrainingDaoTest {
 
         trainingDao.addNewTraining(login, training);
 
-        assertEquals(training, trainingDao.getTraining(login, date, type));
+        assertEquals(training, trainingDao.getTraining(login, date, type).orElseThrow());
     }
 
     @Test
@@ -47,7 +47,7 @@ public class InMemoryTrainingDaoTest {
 
         trainingDao.addNewTraining(login, training);
 
-        assertNull(trainingDao.getTraining(login, date, type));
+        assertTrue(trainingDao.getTraining(login, date, type).isEmpty());
     }
 
     @Test

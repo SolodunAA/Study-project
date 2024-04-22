@@ -1,5 +1,7 @@
 package diary.app.dao.postgres;
 
+import diary.app.dao.LoginDao;
+import diary.app.dao.UserRolesDao;
 import diary.app.dto.Role;
 import diary.app.dto.UserAction;
 import liquibase.Liquibase;
@@ -13,7 +15,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.EnumSet;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -22,7 +23,8 @@ public class PostgresUserRolesDaoTest {
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
             "postgres:15-alpine"
     );
-
+    private final UserRolesDao userRolesDao = new PostgresUserRolesDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "admin_data");
+    private final LoginDao loginDao = new PostgresLoginDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "admin_data");
     @BeforeClass
     public static void beforeAll() {
         postgres.start();
@@ -53,7 +55,7 @@ public class PostgresUserRolesDaoTest {
     public void clearDb() {
         try (Connection connection = DriverManager.getConnection(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())) {
             var st = connection.createStatement();
-            st.execute("TRUNCATE TABLE admin_data.\"UserRoleTable\"");
+            st.execute("TRUNCATE TABLE admin_data.login_table CASCADE");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -61,11 +63,12 @@ public class PostgresUserRolesDaoTest {
 
     @Test
     public void addAndGetRoleForUserTest() {
-        var dao = new PostgresUserRolesDao(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword(), "admin_data");
-        Role role = new Role(EnumSet.of(UserAction.SEE_USER_TRAININGS));
         String login = "login";
-        dao.addRoleForUser(login, role);
-        assertEquals(role, dao.getUserRole(login));
+        loginDao.addNewUser(login, 11);
+        Role role = new Role(EnumSet.of(UserAction.SEE_USER_TRAININGS));
+
+        userRolesDao.addRoleForUser(login, role);
+        assertEquals(role, userRolesDao.getUserRole(login));
     }
 
 }
