@@ -1,14 +1,13 @@
 package diary.app.dao.inmemory;
 
 import diary.app.dao.TrainingDao;
-import diary.app.dao.inmemory.InMemoryTrainingDao;
 import diary.app.dto.Training;
 import org.junit.Test;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class InMemoryTrainingDaoTest {
     @Test
@@ -18,7 +17,7 @@ public class InMemoryTrainingDaoTest {
         LocalDate date = LocalDate.parse("2024-04-12");
         String type = "swimming";
 
-        assertTrue(trainingDao.getTraining(login, date, type).isEmpty());
+        assertThat(trainingDao.getTraining(login, date, type).isEmpty()).isTrue();
     }
 
     @Test
@@ -33,7 +32,7 @@ public class InMemoryTrainingDaoTest {
 
         trainingDao.addNewTraining(login, training);
 
-        assertEquals(training, trainingDao.getTraining(login, date, type).orElseThrow());
+        assertThat(trainingDao.getTraining(login, date, type).orElseThrow()).isEqualTo(training);
     }
 
     @Test
@@ -47,7 +46,7 @@ public class InMemoryTrainingDaoTest {
 
         trainingDao.addNewTraining(login, training);
 
-        assertTrue(trainingDao.getTraining(login, date, type).isEmpty());
+        assertThat(trainingDao.getTraining(login, date, type).isEmpty()).isTrue();
     }
 
     @Test
@@ -76,7 +75,7 @@ public class InMemoryTrainingDaoTest {
 
         List<Training> expectedTrainingList = List.of(training1);
 
-        assertEquals(expectedTrainingList, trainingDao.getAllTrainings(login));
+        assertThat(trainingDao.getAllTrainings(login)).isEqualTo(expectedTrainingList);
     }
     @Test
     public void deleteTraining(){
@@ -117,7 +116,7 @@ public class InMemoryTrainingDaoTest {
 
         trainingDao.deleteTraining(login, date3, type3);
 
-        assertEquals(expectedTrainingsList, trainingDao.getAllTrainings(login));
+        assertThat(trainingDao.getAllTrainings(login)).isEqualTo(expectedTrainingsList);
     }
     @Test
     public void getAllTrainingsTest(){
@@ -157,7 +156,7 @@ public class InMemoryTrainingDaoTest {
         //is ordered by date
         List<Training> trainingsList = List.of(training3, training1, training2);
 
-        assertEquals(trainingsList , trainingDao.getAllTrainings(login));
+        assertThat(trainingDao.getAllTrainings(login)).isEqualTo(trainingsList);
     }
     @Test
     public void getTrainingsFromThePeriodTest(){
@@ -200,7 +199,7 @@ public class InMemoryTrainingDaoTest {
         List<Training> daoListTrainings = trainingDao.getTrainingsFromThePeriod(login, dateStart, dateFinish);
         List<Training> expectedTrainingsList = List.of(training1,training2);
 
-        assertEquals(expectedTrainingsList , daoListTrainings);
+        assertThat(daoListTrainings).isEqualTo(expectedTrainingsList);
     }
 
     @Test
@@ -209,7 +208,7 @@ public class InMemoryTrainingDaoTest {
         String trainingType = "swimming";
         trainingDao.addTrainingType(trainingType);
 
-        assertTrue(trainingDao.getTrainingTypes().contains(trainingType));
+        assertThat(trainingDao.getTrainingTypes()).contains(trainingType);
     }
 
     @Test
@@ -224,7 +223,7 @@ public class InMemoryTrainingDaoTest {
 
         trainingDao.addTrainingType("swimming");
 
-        assertFalse(trainingDao.getTrainingTypes().contains(deleteType));
+        assertThat(trainingDao.getTrainingTypes()).doesNotContain(deleteType);
     }
 
 }

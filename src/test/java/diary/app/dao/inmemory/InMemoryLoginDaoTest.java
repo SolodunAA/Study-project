@@ -1,10 +1,10 @@
 package diary.app.dao.inmemory;
 
 import diary.app.dao.LoginDao;
-import diary.app.dao.inmemory.InMemoryLoginDao;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class InMemoryLoginDaoTest {
 
@@ -14,8 +14,8 @@ public class InMemoryLoginDaoTest {
 
         loginDao.addNewUser("user1", 12);
 
-        assertTrue(loginDao.checkIfUserExist("user1"));
-        assertFalse(loginDao.checkIfUserExist("user2"));
+        assertThat(loginDao.checkIfUserExist("user1")).isTrue();
+        assertThat(loginDao.checkIfUserExist("user2")).isFalse();
     }
 
     @Test
@@ -23,8 +23,8 @@ public class InMemoryLoginDaoTest {
         LoginDao loginDao = new InMemoryLoginDao();
 
         loginDao.addNewUser("user1", 12);
-        assertEquals(12, loginDao.getEncodedPassword("user1"));
-        assertThrows(NullPointerException.class, () -> loginDao.getEncodedPassword("user2"));
+        assertThat(loginDao.getEncodedPassword("user1")).isEqualTo(12);
+        assertThatThrownBy(() -> loginDao.getEncodedPassword("user2")).isExactlyInstanceOf(NullPointerException.class);
     }
 
 }

@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PostgresTrainingDaoTest {
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
@@ -88,7 +88,7 @@ public class PostgresTrainingDaoTest {
         list.add(training);
         trainingDao.addNewTraining(login, training);
 
-        assertEquals(list, trainingDao.getAllTrainings(login));
+        assertThat(trainingDao.getAllTrainings(login)).isEqualTo(list);
     }
 
     @Test
@@ -102,7 +102,7 @@ public class PostgresTrainingDaoTest {
         Training training = new Training(date, type, time, calories, addInfo);
         trainingDao.addNewTraining(login, training);
 
-        assertEquals(training, trainingDao.getTraining(login, date, type).orElseThrow());
+        assertThat(trainingDao.getTraining(login, date, type).orElseThrow()).isEqualTo(training);
     }
 
     @Test
@@ -118,7 +118,7 @@ public class PostgresTrainingDaoTest {
         trainingDao.addNewTraining(login, training);
         trainingDao.deleteTraining(login, date, type);
 
-        assertFalse(trainingDao.getAllTrainings(login).contains(training));
+        assertThat(trainingDao.getAllTrainings(login)).doesNotContain(training);
     }
 
     @Test
@@ -145,7 +145,7 @@ public class PostgresTrainingDaoTest {
         list.add(training2);
         list.add(training1);
 
-        assertEquals(list, trainingDao.getAllTrainings(login));
+        assertThat(trainingDao.getAllTrainings(login)).isEqualTo(list);
     }
 
     @Test
@@ -183,7 +183,7 @@ public class PostgresTrainingDaoTest {
         list.add(training2);
         list.add(training1);
 
-        assertEquals(list, trainingDao.getTrainingsFromThePeriod(login, dateStart, dateEnd));
+        assertThat(trainingDao.getTrainingsFromThePeriod(login, dateStart, dateEnd)).isEqualTo(list);
     }
 
     @Test
@@ -203,7 +203,7 @@ public class PostgresTrainingDaoTest {
         set.add(type2);
         set.add(type3);
 
-        assertEquals(set, trainingDao.getTrainingTypes());
+        assertThat(trainingDao.getTrainingTypes()).isEqualTo(set);
     }
 
     @Test
@@ -211,7 +211,7 @@ public class PostgresTrainingDaoTest {
         clearDb();
         String type1 = "swimming";
         trainingDao.addTrainingType(type1);
-        assertTrue(trainingDao.getTrainingTypes().contains(type1));
+        assertThat(trainingDao.getTrainingTypes()).contains(type1);
     }
 
     @Test
@@ -227,6 +227,6 @@ public class PostgresTrainingDaoTest {
 
         trainingDao.deleteTrainingType(type1);
 
-        assertFalse(trainingDao.getTrainingTypes().contains(type1));
+        assertThat(trainingDao.getTrainingTypes()).doesNotContain(type1);
     }
 }

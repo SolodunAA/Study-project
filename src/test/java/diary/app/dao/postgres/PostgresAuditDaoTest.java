@@ -14,8 +14,7 @@ import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PostgresAuditDaoTest {
 
@@ -74,7 +73,7 @@ public class PostgresAuditDaoTest {
         AuditItem auditItem = new AuditItem(login, action, userInput);
         dao.addAuditItem(auditItem);
 
-        assertTrue(dao.getAuditItems(dao.AuditItemsSize()).contains(auditItem));
+        assertThat(dao.getAuditItems(dao.AuditItemsSize())).contains(auditItem);
     }
 
     @Test
@@ -100,7 +99,7 @@ public class PostgresAuditDaoTest {
         list.add(auditItem1);
         list.add(auditItem2);
 
-        assertEquals(list, dao.getAuditItems(dao.AuditItemsSize()));
+        assertThat(dao.getAuditItems(dao.AuditItemsSize())).isEqualTo(list);
     }
 
     @Test
@@ -122,6 +121,6 @@ public class PostgresAuditDaoTest {
         dao.addAuditItem(auditItem1);
         dao.addAuditItem(auditItem2);
 
-        assertEquals(2, dao.AuditItemsSize());
+        assertThat(dao.AuditItemsSize()).isEqualTo(2);
     }
 }

@@ -10,8 +10,7 @@ import diary.app.in.ConsoleReader;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RegistrationServiceImplTest {
 
@@ -32,8 +31,8 @@ public class RegistrationServiceImplTest {
 
         int encodedPassword = loginDao.getEncodedPassword(login);
         int expectedEncodedPassword = encoder.encode(password);
-        assertEquals(expectedEncodedPassword, encodedPassword);
-        assertEquals(2, auditDao.getAuditItems(10).size());
+        assertThat(encodedPassword).isEqualTo(expectedEncodedPassword);
+        assertThat(auditDao.getAuditItems(10).size()).isEqualTo(2);
     }
 
 
@@ -55,8 +54,8 @@ public class RegistrationServiceImplTest {
 
         int encodedPassword1 = loginDao.getEncodedPassword(login);
         int expectedEncodedPassword1 = encoder.encode(password1);
-        assertEquals(expectedEncodedPassword1, encodedPassword1);
-        assertEquals(2, auditDao.getAuditItems(10).size());
+        assertThat(encodedPassword1).isEqualTo(expectedEncodedPassword1);
+        assertThat(auditDao.getAuditItems(10).size()).isEqualTo(2);
 
         //fail to register with same login
         Mockito.when(crMock.read()).thenReturn(login, password2);
@@ -64,9 +63,9 @@ public class RegistrationServiceImplTest {
 
         int encodedPassword2 = loginDao.getEncodedPassword(login);
         int expectedEncodedPassword2 = encoder.encode(password2);
-        assertNotEquals(expectedEncodedPassword2, encodedPassword2);
-        assertEquals(expectedEncodedPassword1, encodedPassword2);
-        assertEquals(3, auditDao.getAuditItems(10).size());
+        assertThat(encodedPassword2).isNotEqualTo(expectedEncodedPassword2);
+        assertThat(encodedPassword2).isEqualTo(expectedEncodedPassword1);
+        assertThat(auditDao.getAuditItems(10).size()).isEqualTo(3);
     }
 
 }

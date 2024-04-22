@@ -9,11 +9,10 @@ import diary.app.dao.inmemory.InMemoryLoginDao;
 import diary.app.dao.LoginDao;
 import diary.app.dao.inmemory.InMemoryRolesDao;
 import diary.app.in.ConsoleReader;
-import diary.app.in.Reader;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthenticationServiceImplTest {
     ConsoleReader crMock = Mockito.mock(ConsoleReader.class);
@@ -29,7 +28,7 @@ public class AuthenticationServiceImplTest {
         String password = "password1";
         Mockito.when(crMock.read()).thenReturn(login, password);
 
-        assertNull(authenticationService.auth());
+        assertThat(authenticationService.auth()).isNull();
     }
 
     @Test
@@ -49,7 +48,7 @@ public class AuthenticationServiceImplTest {
 
         registrationService.register();
 
-        assertNull(authenticationService.auth());
+        assertThat(authenticationService.auth()).isNull();
     }
 
     @Test
@@ -65,6 +64,6 @@ public class AuthenticationServiceImplTest {
 
         Mockito.when(crMock.read()).thenReturn(login, password);
 
-        assertEquals(login, authenticationService.auth());
+        assertThat(authenticationService.auth()).isEqualTo(login);
     }
 }

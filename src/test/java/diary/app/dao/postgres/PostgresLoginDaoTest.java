@@ -11,9 +11,9 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class PostgresLoginDaoTest {
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
@@ -61,25 +61,25 @@ public class PostgresLoginDaoTest {
     @Test
     public void addNewUserTest() {
         dao.addNewUser("login1", 111);
-        assertTrue(dao.checkIfUserExist("login1"));
+        assertThat(dao.checkIfUserExist("login1")).isTrue();
     }
 
     @Test
     public void addDuplicateUserTest() {
         dao.addNewUser("login1", 111);
-        assertThrows(RuntimeException.class, () -> dao.addNewUser("login1", 222));
+        assertThatThrownBy(() -> dao.addNewUser("login1", 222)).isExactlyInstanceOf(RuntimeException.class);
     }
 
     @Test
     public void getEncodedPasswordTest() {
         dao.addNewUser("login1", 111);
-        assertEquals(111, dao.getEncodedPassword("login1"));
+        assertThat(dao.getEncodedPassword("login1")).isEqualTo(111);
     }
     @Test
     public void checkIfUserExistTest() {
         String login = "login";
         int passwordEncoded = 111;
         dao.addNewUser(login, passwordEncoded);
-        assertTrue(dao.checkIfUserExist(login));
+        assertThat(dao.checkIfUserExist(login)).isTrue();
     }
 }

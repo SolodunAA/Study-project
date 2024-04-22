@@ -16,8 +16,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.EnumSet;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PostgresUserRolesDaoTest {
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
@@ -68,7 +67,7 @@ public class PostgresUserRolesDaoTest {
         Role role = new Role(EnumSet.of(UserAction.SEE_USER_TRAININGS));
 
         userRolesDao.addRoleForUser(login, role);
-        assertEquals(role, userRolesDao.getUserRole(login));
+        assertThat(userRolesDao.getUserRole(login)).isEqualTo(role);
     }
 
 }
