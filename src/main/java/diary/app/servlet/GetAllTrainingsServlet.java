@@ -46,7 +46,7 @@ public class GetAllTrainingsServlet extends HttpServlet {
         String login = req.getParameter(LOGIN_PARAM);
         String token = req.getParameter(TOKEN_PARAM);
         if (tokenService.validateToken(login, token)) {
-            if (!rolesDao.getUserRole(login).isActionAllowed(UserAction.CHANGE_APP_SETTINGS)) {
+            if (!rolesDao.getUserRole(login).isActionAllowed(UserAction.SEE_USER_TRAININGS)) {
                 String err = "action not allowed";
                 resp.setStatus(500);
                 resp.setContentType("application/json");
