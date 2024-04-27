@@ -123,13 +123,14 @@ public class PostgresTrainingDao implements TrainingDao {
     }
 
     @Override
-    public void deleteTraining(String login, LocalDate date, String type) {
+    public boolean deleteTraining(String login, LocalDate date, String type) {
         try (Connection connection = DriverManager.getConnection(url, userName, password);
              PreparedStatement ps = SqlUtils.createPreparedStatement(connection, DELETE_TRAINING_RECORD_SQL, schema)) {
             ps.setString(1, login);
             ps.setDate(2, Date.valueOf(date));
             ps.setString(3, type);
             ps.executeUpdate();
+            return true;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

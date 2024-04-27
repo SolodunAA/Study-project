@@ -53,7 +53,7 @@ public class InMemoryTrainingDao implements TrainingDao {
     }
 
     @Override
-    public void deleteTraining(String login, LocalDate date, String type) {
+    public boolean deleteTraining(String login, LocalDate date, String type) {
         TrainingKey trainingKey = new TrainingKey(type, date);
         Map<TrainingKey, Training> allPersonTraining = clientToTrainingCache.get(login);
         if (allPersonTraining == null) {
@@ -61,10 +61,12 @@ public class InMemoryTrainingDao implements TrainingDao {
         } else {
             if (allPersonTraining.containsKey(trainingKey)) {
                 allPersonTraining.remove(trainingKey);
+                return true;
             } else {
                 ConsolePrinter.print(trainingKey + "Doesn't exist");
             }
         }
+        return false;
     }
 
 

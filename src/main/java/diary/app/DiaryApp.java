@@ -40,7 +40,7 @@ public class DiaryApp {
     }
 
     private void runUserInteractions() {
-        // print options
+       /* // print options
         ConsolePrinter.print("Print 1 if you want to register");
         ConsolePrinter.print("Print 2 if you want to login");
         ConsolePrinter.print("Print 3 if you want to stop server");
@@ -61,7 +61,7 @@ public class DiaryApp {
             }
             case "3" -> Thread.currentThread().interrupt();
             default -> ConsolePrinter.print("Error, try again");
-        }
+        }*/
     }
 
 }

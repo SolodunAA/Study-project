@@ -23,11 +23,10 @@ public class RegistrationServiceImplTest {
         LoginDao loginDao = new InMemoryLoginDao();
         UserRolesDao userRolesDao = new InMemoryRolesDao();
         AuditDao auditDao = new InMemoryAuditDao();
-        RegistrationService registrationService = new RegistrationServiceImpl(encoder, loginDao, userRolesDao, auditDao, crMock);
+        RegistrationService registrationService = new RegistrationServiceImpl(encoder, loginDao, userRolesDao);
 
-        Mockito.when(crMock.read()).thenReturn(login, password);
 
-        registrationService.register();
+        registrationService.register(login, password);
 
         int encodedPassword = loginDao.getEncodedPassword(login);
         int expectedEncodedPassword = encoder.encode(password);
@@ -45,21 +44,16 @@ public class RegistrationServiceImplTest {
         LoginDao loginDao = new InMemoryLoginDao();
         UserRolesDao userRolesDao = new InMemoryRolesDao();
         AuditDao auditDao = new InMemoryAuditDao();
-        RegistrationService registrationService = new RegistrationServiceImpl(encoder, loginDao, userRolesDao, auditDao, crMock);
+        RegistrationService registrationService = new RegistrationServiceImpl(encoder, loginDao, userRolesDao);
 
-
-        //successfully register
-        Mockito.when(crMock.read()).thenReturn(login, password1);
-        registrationService.register();
+        registrationService.register(login, password1);
 
         int encodedPassword1 = loginDao.getEncodedPassword(login);
         int expectedEncodedPassword1 = encoder.encode(password1);
         assertThat(encodedPassword1).isEqualTo(expectedEncodedPassword1);
         assertThat(auditDao.getAuditItems(10).size()).isEqualTo(2);
 
-        //fail to register with same login
-        Mockito.when(crMock.read()).thenReturn(login, password2);
-        registrationService.register();
+        registrationService.register(login, password2);
 
         int encodedPassword2 = loginDao.getEncodedPassword(login);
         int expectedEncodedPassword2 = encoder.encode(password2);

@@ -33,7 +33,7 @@ public interface TrainingDao {
      * @param date - date of the training
      * @param type - training type
      */
-    void deleteTraining(String login, LocalDate date, String type);
+    boolean deleteTraining(String login, LocalDate date, String type);
 
     /**
      * Method get all training records

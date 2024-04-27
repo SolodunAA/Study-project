@@ -4,11 +4,36 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class Training {
-    private final LocalDate date;
-    private final String type;
-    private final double timeInMinutes;
-    private final int calories;
-    private final String additionalInfo;
+    private LocalDate date;
+    private String type;
+    private double timeInMinutes;
+    private int calories;
+
+    public Training() {
+
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setTimeInMinutes(double timeInMinutes) {
+        this.timeInMinutes = timeInMinutes;
+    }
+
+    public void setCalories(int calories) {
+        this.calories = calories;
+    }
+
+    public void setAdditionalInfo(String additionalInfo) {
+        this.additionalInfo = additionalInfo;
+    }
+
+    private String additionalInfo;
 
     public Training(LocalDate date, String type, double timeInMinutes,
                     int calories, String additionalInfo){

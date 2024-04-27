@@ -1,10 +1,18 @@
 package diary.app.dao.inmemory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import diary.app.dao.TrainingDao;
 import diary.app.dto.Training;
 import org.junit.Test;
 
+import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,6 +55,24 @@ public class InMemoryTrainingDaoTest {
         trainingDao.addNewTraining(login, training);
 
         assertThat(trainingDao.getTraining(login, date, type).isEmpty()).isTrue();
+    }
+
+    @Test
+    public void tst() throws JsonProcessingException {
+        LocalDate date = LocalDate.parse("2024-04-12");
+        String type = "swimming";
+        Training training = new Training(date, type, 44, 54, "no");
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JSR310Module());
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        objectMapper.setDateFormat(df);
+
+        String json = objectMapper.writeValueAsString(training);
+        System.out.println(URLEncoder.encode(json));
+        Training obj = objectMapper.readValue(json, Training.class);
+
+        assertThat(training).isEqualTo(obj);
+
     }
 
     @Test

@@ -5,22 +5,21 @@ import diary.app.dao.inmemory.InMemoryAuditDao;
 import diary.app.dao.inmemory.InMemoryLoginDao;
 import diary.app.dao.inmemory.InMemoryRolesDao;
 import diary.app.dao.inmemory.InMemoryTrainingDao;
-import diary.app.dao.postgres.PostgresAuditDao;
-import diary.app.dao.postgres.PostgresLoginDao;
-import diary.app.dao.postgres.PostgresTrainingDao;
-import diary.app.dao.postgres.PostgresUserRolesDao;
+import diary.app.dao.postgres.*;
 
 public class DaoFactory {
     private final AuditDao auditDao;
     private final LoginDao loginDao;
     private final TrainingDao trainingDao;
     private final UserRolesDao userRolesDao;
+    private final TokenDao tokenDao;
 
     private DaoFactory() {
         this.auditDao = new InMemoryAuditDao();
         this.loginDao = new InMemoryLoginDao();
         this.trainingDao = new InMemoryTrainingDao();
         this.userRolesDao = new InMemoryRolesDao();
+        this.tokenDao = null;
     }
 
     private DaoFactory(String url,
@@ -32,6 +31,7 @@ public class DaoFactory {
         this.loginDao = new PostgresLoginDao(url, user, pswd, adminSchema);
         this.userRolesDao = new PostgresUserRolesDao(url, user, pswd, adminSchema);
         this.trainingDao = new PostgresTrainingDao(url, user, pswd, dataSchema);
+        this.tokenDao = new PostgresTokenDao(url, user, pswd, adminSchema);
     }
 
     public static DaoFactory createInMemoryDaoFactory() {
@@ -60,5 +60,9 @@ public class DaoFactory {
 
     public UserRolesDao getUserRolesDao() {
         return userRolesDao;
+    }
+
+    public TokenDao getTokenDao() {
+        return tokenDao;
     }
 }
