@@ -1,5 +1,6 @@
-package diary.app.dao;
+package diary.app.dao.inmemory;
 
+import diary.app.dao.TrainingDao;
 import diary.app.dto.Training;
 import diary.app.out.ConsolePrinter;
 
@@ -35,7 +36,7 @@ public class InMemoryTrainingDao implements TrainingDao {
         }
     }
 
-    public Training getTraining(String login, LocalDate date, String type){
+    public Optional<Training> getTraining(String login, LocalDate date, String type){
         TrainingKey trainingKey = new TrainingKey(type, date);
         Map<TrainingKey, Training> allPersonTraining = clientToTrainingCache.get(login);
         Training result = null;
@@ -48,7 +49,7 @@ public class InMemoryTrainingDao implements TrainingDao {
                 ConsolePrinter.print(trainingKey + "Doesn't exist");
             }
         }
-        return result;
+        return Optional.ofNullable(result);
     }
 
     @Override

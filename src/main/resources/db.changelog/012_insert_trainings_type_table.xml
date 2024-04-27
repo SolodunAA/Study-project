@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+        logicalFilePath="db/changelog.xml">
+    <changeSet id="012_insert_trainings_type_table.xml" author="Solodun">
+        <insert tableName="trainings_type_table" schemaName="dairy">
+            <column name="training_type_id" valueSequenceNext="training_type_id_seq"/>
+            <column name="training_type" value="swimming"/>
+        </insert>
+        <insert tableName="trainings_type_table" schemaName="dairy">
+            <column name="training_type_id" valueSequenceNext="training_type_id_seq"/>
+            <column name="training_type" value="running"/>
+        </insert>
+        <insert tableName="trainings_type_table" schemaName="dairy">
+            <column name="training_type_id" valueSequenceNext="training_type_id_seq"/>
+            <column name="training_type" value="jogging"/>
+        </insert>
+        <insert tableName="trainings_type_table" schemaName="dairy">
+            <column name="training_type_id" valueSequenceNext="training_type_id_seq"/>
+            <column name="training_type" value="joga"/>
+        </insert>
+        <insert tableName="trainings_type_table" schemaName="dairy">
+            <column name="training_type_id" valueSequenceNext="training_type_id_seq"/>
+            <column name="training_type" value="gym"/>
+        </insert>
+        <insert tableName="trainings_type_table" schemaName="dairy">
+            <column name="training_type_id" valueSequenceNext="training_type_id_seq"/>
+            <column name="training_type" value="cardio"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

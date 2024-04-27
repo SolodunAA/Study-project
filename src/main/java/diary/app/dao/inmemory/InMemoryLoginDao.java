@@ -1,4 +1,6 @@
-package diary.app.dao;
+package diary.app.dao.inmemory;
+
+import diary.app.dao.LoginDao;
 
 import java.util.HashMap;
 import java.util.Map;

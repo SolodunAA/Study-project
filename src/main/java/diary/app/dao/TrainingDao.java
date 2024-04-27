@@ -4,6 +4,7 @@ import diary.app.dto.Training;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 /**
  * class stores information about trainings and o some actions on them: add, get,
@@ -24,7 +25,7 @@ public interface TrainingDao {
      * @param type - training type
      * @return training record
      */
-    Training getTraining(String login, LocalDate date, String type);
+    Optional<Training> getTraining(String login, LocalDate date, String type);
 
     /**
      * Method delete information about selected training from the storage

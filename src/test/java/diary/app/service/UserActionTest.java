@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserActionTest {
 
@@ -17,12 +17,12 @@ public class UserActionTest {
         for (UserAction action : UserAction.values()) {
             String alias = action.getActionAlias();
             Optional<UserAction> foundAction = UserAction.actionByAlias(alias);
-            assertTrue(foundAction.isPresent());
-            assertEquals(action, foundAction.get());
+            assertThat(foundAction.isPresent()).isTrue();
+            assertThat(foundAction.get()).isEqualTo(action);
         }
 
         Optional<UserAction> actionForUnknownAlias = UserAction.actionByAlias("unknown");
-        assertTrue(actionForUnknownAlias.isEmpty());
+        assertThat(actionForUnknownAlias.isEmpty()).isTrue();
     }
 
     @Test
@@ -31,6 +31,6 @@ public class UserActionTest {
                 .map(UserAction::getActionAlias)
                 .collect(Collectors.toSet());
 
-        assertEquals(UserAction.values().length, aliases.size());
+        assertThat(aliases.size()).isEqualTo(UserAction.values().length);
     }
 }

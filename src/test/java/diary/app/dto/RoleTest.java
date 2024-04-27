@@ -1,8 +1,9 @@
 package diary.app.dto;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RoleTest {
     @Test
@@ -11,9 +12,9 @@ public class RoleTest {
         UserAction userAction2 = UserAction.EDIT_USER_TRAININGS;
         UserAction notAllowedAction = UserAction.SEE_OTHER_USERS_TRAININGS;
         Role role = new Role(Set.of(userAction1, userAction2));
-        assertFalse(role.isActionAllowed(notAllowedAction));
-        assertTrue(role.isActionAllowed(userAction1));
-        assertTrue(role.isActionAllowed(userAction2));
+        assertThat(role.isActionAllowed(notAllowedAction)).isFalse();
+        assertThat(role.isActionAllowed(userAction1)).isTrue();
+        assertThat(role.isActionAllowed(userAction2)).isTrue();
     }
     @Test
     public void getAllowedActionsTest(){
@@ -21,6 +22,6 @@ public class RoleTest {
         UserAction userAction2 = UserAction.EDIT_USER_TRAININGS;
         Role role = new Role(Set.of(userAction1, userAction2));
         Set<UserAction> expectedAllowedActions = Set.of(userAction1, userAction2, UserAction.EXIT);
-        assertEquals(expectedAllowedActions, role.getAllowedActions());
+        assertThat(role.getAllowedActions()).isEqualTo(expectedAllowedActions);
     }
 }

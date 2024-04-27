@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+        logicalFilePath="db/changelog.xml">
+    <changeSet id="008_create_foreign_keys.xml" author="Solodun">
+        <addForeignKeyConstraint baseTableName="login_password_table"
+                                 baseColumnNames="login_id"
+                                 constraintName="fk_login_login_password"
+                                 referencedTableName="login_table"
+                                 referencedColumnNames="login_id"
+                                 baseTableSchemaName="admin_data"
+                                 referencedTableSchemaName="admin_data"/>
+
+        <addForeignKeyConstraint baseTableName="user_role_table"
+                                 baseColumnNames="login_id"
+                                 constraintName="fk_login_role"
+                                 referencedTableName="login_table"
+                                 referencedColumnNames="login_id"
+                                 baseTableSchemaName="admin_data"
+                                 referencedTableSchemaName="admin_data"/>
+
+        <addForeignKeyConstraint baseTableName="audit_table"
+                                 baseColumnNames="login_id"
+                                 constraintName="fk_login_audit"
+                                 referencedTableName="login_table"
+                                 referencedColumnNames="login_id"
+                                 baseTableSchemaName="admin_data"
+                                 referencedTableSchemaName="admin_data"/>
+
+        <addForeignKeyConstraint baseTableName="trainings_table"
+                                 baseColumnNames="login_id"
+                                 constraintName="fk_trainings_audit"
+                                 referencedTableName="login_table"
+                                 referencedColumnNames="login_id"
+                                 baseTableSchemaName="dairy"
+                                 referencedTableSchemaName="admin_data"/>
+
+        <addForeignKeyConstraint baseTableName="trainings_table"
+                                 baseColumnNames="training_type_id"
+                                 constraintName="fk_trainings_type"
+                                 referencedTableName="trainings_type_table"
+                                 referencedColumnNames="training_type_id"
+                                 baseTableSchemaName="dairy"
+                                 referencedTableSchemaName="dairy"/>
+    </changeSet>
+
+</databaseChangeLog>

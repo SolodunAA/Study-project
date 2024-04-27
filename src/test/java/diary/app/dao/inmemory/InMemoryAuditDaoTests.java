@@ -1,10 +1,9 @@
-package diary.app.dao;
+package diary.app.dao.inmemory;
 
 import diary.app.dto.AuditItem;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class InMemoryAuditDaoTests {
     @Test
@@ -19,7 +18,7 @@ public class InMemoryAuditDaoTests {
 
         inMemoryAuditDao.addAuditItem(auditItem);
 
-        assertTrue(inMemoryAuditDao.getAuditItems(1).contains(auditItem));
+        assertThat(inMemoryAuditDao.getAuditItems(1)).contains(auditItem);
     }
     @Test
     public void getLimitAuditItemTest(){
@@ -44,6 +43,6 @@ public class InMemoryAuditDaoTests {
         inMemoryAuditDao.addAuditItem(auditItem2);
         inMemoryAuditDao.addAuditItem(auditItem3);
 
-        assertEquals(2, inMemoryAuditDao.getAuditItems(2).size());
+        assertThat(inMemoryAuditDao.getAuditItems(2).size()).isEqualTo(2);
     }
 }

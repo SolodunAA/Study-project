@@ -1,11 +1,11 @@
 package diary.app.auxiliaryfunctions;
-import diary.app.dao.InMemoryTrainingDao;
 import diary.app.dao.TrainingDao;
 import diary.app.dto.Training;
 import diary.app.in.Reader;
 import diary.app.out.ConsolePrinter;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -93,7 +93,13 @@ public class TrainingInteractions{
         ConsolePrinter.print("Enter 4 if it is calories");
         ConsolePrinter.print("Enter 5 if it is additional info");
         String userAnswer = reader.read();
-        Training training = trainingDao.getTraining(login, date, type);
+        Optional<Training> trainingOpt = trainingDao.getTraining(login, date, type);
+        if (trainingOpt.isEmpty()) {
+            ConsolePrinter.print("this training doe not exists");
+            return;
+        }
+
+        Training training = trainingOpt.get();
         trainingDao.deleteTraining(login, date, type);
         LocalDate newDate = training.getDate();
         String newType = training.getType();

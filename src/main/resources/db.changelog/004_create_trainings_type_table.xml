@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+        logicalFilePath="db/changelog.xml">
+    <changeSet id="004_create_trainings_type_table.xml" author="Solodun">
+        <createSequence sequenceName="training_type_id_seq" schemaName="dairy"
+                        minValue="1"
+                        dataType="BIGINT"/>
+        <createTable tableName="trainings_type_table" schemaName="dairy" remarks="table with allowed training types">
+            <column name="training_type_id" type="INT" defaultValueComputed="nextval('dairy.training_type_id_seq')" remarks="used as FK in other tables" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="training_type" type="VARCHAR(255)" remarks="allowed training type">
+                <constraints unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

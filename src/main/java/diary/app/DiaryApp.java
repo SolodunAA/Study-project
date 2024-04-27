@@ -1,6 +1,5 @@
 package diary.app;
 
-import diary.app.dao.AuditDao;
 import diary.app.dao.UserRolesDao;
 import diary.app.dto.Role;
 import diary.app.factory.DaoFactory;
@@ -19,14 +18,8 @@ public class DiaryApp {
     private final AuthenticationService authenticationService;
     private final UserOfficeService userOffice;
     private final Reader reader;
-    private final DaoFactory daoFactory;
-    private final InOutFactory inOutFactory;
-    private final ServicesFactory servicesFactory;
 
     public DiaryApp(DaoFactory daoFactory,InOutFactory inOutFactory, ServicesFactory servicesFactory) {
-        this.daoFactory = daoFactory;
-        this.inOutFactory = inOutFactory;
-        this.servicesFactory = servicesFactory;
         this.userRolesDao = daoFactory.getUserRolesDao();
         this.registrationService = servicesFactory.getRegistrationService();
         this.authenticationService = servicesFactory.getAuthenticationService();
@@ -54,7 +47,7 @@ public class DiaryApp {
         // wait for option selection input
         String input = reader.read();
         // print what input is required
-        //handle input
+        // handle input
         switch (input) {
             case "1" -> registrationService.register();
             case "2" -> {

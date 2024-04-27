@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+        logicalFilePath="db/changelog.xml">
+    <include file="001_create_schemas.xml" relativeToChangelogFile="true"/>
+    <include file="002_create_login_table.xml" relativeToChangelogFile="true"/>
+    <include file="003_create_login_password_table.xml" relativeToChangelogFile="true"/>
+    <include file="004_create_trainings_type_table.xml" relativeToChangelogFile="true"/>
+    <include file="005_create_user_role_table.xml" relativeToChangelogFile="true"/>
+    <include file="006_create_audit_table.xml" relativeToChangelogFile="true"/>
+    <include file="007_create_trainings_table.xml" relativeToChangelogFile="true"/>
+    <include file="008_create_foreign_keys.xml" relativeToChangelogFile="true"/>
+    <include file="009_insert_login_table.xml" relativeToChangelogFile="true"/>
+    <include file="010_insert_login_password.xml" relativeToChangelogFile="true"/>
+    <include file="011_insert_user_role_table.xml" relativeToChangelogFile="true"/>
+    <include file="012_insert_trainings_type_table.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>

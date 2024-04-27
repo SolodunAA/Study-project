@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+        logicalFilePath="db/changelog.xml">
+    <changeSet id="002_create_login_table.xml" author="Solodun">
+        <createSequence sequenceName="login_id_seq" schemaName="admin_data"
+                        minValue="1"
+                        dataType="BIGINT"/>
+        <createTable tableName="login_table" schemaName="admin_data" remarks="table with login and login id used as FK across other tables">
+            <column name="login_id" type="BIGINT" defaultValueComputed="nextval('admin_data.login_id_seq')" remarks="unique login id">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="login" type="VARCHAR(255)" remarks="user login">
+                <constraints unique="true" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
