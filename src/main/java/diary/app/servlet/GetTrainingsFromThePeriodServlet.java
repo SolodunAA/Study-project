@@ -6,10 +6,10 @@ import diary.app.annotations.Auditable;
 import diary.app.annotations.Loggable;
 import diary.app.config.StaticConfig;
 import diary.app.dao.UserRolesDao;
-import diary.app.dto.Training;
+import diary.app.dto.TrainingDto;
 import diary.app.dto.UserAction;
-import diary.app.service.TokenService;
-import diary.app.service.TrainingService;
+import diary.app.service.Impl.TokenServiceImpl;
+import diary.app.service.Impl.TrainingServiceImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,13 +27,13 @@ import static diary.app.servlet.GetParams.*;
 @Loggable
 public class GetTrainingsFromThePeriodServlet extends HttpServlet {
 
-    private final TrainingService trainingService;
+    private final TrainingServiceImpl trainingServiceImpl;
     private final ObjectMapper objectMapper;
-    private final TokenService tokenService;
+    private final TokenServiceImpl tokenService;
     private final UserRolesDao rolesDao;
 
     public GetTrainingsFromThePeriodServlet() {
-        this.trainingService = StaticConfig.SERVICES_FACTORY.getTrainingService();
+        this.trainingServiceImpl = StaticConfig.SERVICES_FACTORY.getTrainingService();
         this.objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JSR310Module());
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -56,7 +56,7 @@ public class GetTrainingsFromThePeriodServlet extends HttpServlet {
                 resp.setContentType("application/json");
                 resp.getOutputStream().write(err.getBytes());
             } else {
-                List<Training> trainings = trainingService.getTrainingsFromThePeriod(login, LocalDate.parse(date_start), LocalDate.parse(date_finish));
+                List<TrainingDto> trainings = trainingServiceImpl.getTrainingsFromThePeriod(login, LocalDate.parse(date_start), LocalDate.parse(date_finish));
                 String json = objectMapper.writeValueAsString(trainings);
                 resp.setStatus(200);
                 resp.setContentType("application/json");

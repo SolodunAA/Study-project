@@ -20,21 +20,16 @@ public class DaoFactoryConfig {
         Properties properties = configReader.readProperties();
         boolean useDb = properties.containsKey(ConfigKeys.USE_DB)
                 && Boolean.parseBoolean(properties.getProperty(ConfigKeys.USE_DB));
-        if (useDb) {
-            System.out.println("creating postgres dao");
-            String dbUrl = properties.getProperty(ConfigKeys.DB_URL);
-            String dbUser = properties.getProperty(ConfigKeys.DB_USER);
-            String dbPassword = properties.getProperty(ConfigKeys.DB_PASSWORD);
-            String adminSchema = properties.getProperty(ConfigKeys.DB_ADMIN_SCHEMA);
-            String dataSchema = properties.getProperty(ConfigKeys.DB_DATA_SCHEMA);
-            runMigrations(dbUrl, dbUser ,dbPassword);
-            return DaoFactory.createPostgreDaoFactory(dbUrl, dbUser, dbPassword, dataSchema, adminSchema);
-        } else {
-            System.out.println("creating in-memory dao");
-            DaoFactory daoFactory = DaoFactory.createInMemoryDaoFactory();
-            setInMemoryInitialConfigs(daoFactory, properties);
-            return daoFactory;
-        }
+
+        System.out.println("creating postgres dao");
+        String dbUrl = properties.getProperty(ConfigKeys.DB_URL);
+        String dbUser = properties.getProperty(ConfigKeys.DB_USER);
+        String dbPassword = properties.getProperty(ConfigKeys.DB_PASSWORD);
+        String adminSchema = properties.getProperty(ConfigKeys.DB_ADMIN_SCHEMA);
+        String dataSchema = properties.getProperty(ConfigKeys.DB_DATA_SCHEMA);
+        runMigrations(dbUrl, dbUser, dbPassword);
+        return DaoFactory.createPostgreDaoFactory(dbUrl, dbUser, dbPassword, dataSchema, adminSchema);
+
     }
 
     private static void runMigrations(String url, String user, String pswd) {
@@ -46,7 +41,7 @@ public class DaoFactoryConfig {
                     new Liquibase("db.changelog/changelog.xml", new ClassLoaderResourceAccessor(), database);
             liquibase.update();
             System.out.println("migration finished successfully");
-        } catch (Exception e ){
+        } catch (Exception e) {
             System.out.println("Got SQL Exception " + e.getMessage());
             throw new RuntimeException(e);
         }

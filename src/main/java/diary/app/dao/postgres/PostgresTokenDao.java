@@ -2,9 +2,7 @@ package diary.app.dao.postgres;
 
 import diary.app.dao.TokenDao;
 import diary.app.dto.Token;
-import diary.app.dto.Training;
 import diary.app.out.ConsolePrinter;
-import org.postgresql.util.PSQLException;
 
 import java.sql.*;
 import java.util.Optional;

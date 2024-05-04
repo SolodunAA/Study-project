@@ -15,9 +15,8 @@ public class StaticConfig {
         System.out.println("START INIT STATICS");
         DaoFactory daoFactory = DaoFactoryConfig.resolveDaoFactoryAndRunMigrations();
         System.out.println("INIT DAO");
-        InOutFactory inOutFactory = new InOutFactory();
-        AuxiliaryFunctionsFactory auxiliaryFunctionsFactory= new AuxiliaryFunctionsFactory(inOutFactory, daoFactory);
-        SERVICES_FACTORY = new ServicesFactory(inOutFactory, auxiliaryFunctionsFactory, daoFactory);
+        AuxiliaryFunctionsFactory auxiliaryFunctionsFactory= new AuxiliaryFunctionsFactory(daoFactory);
+        SERVICES_FACTORY = new ServicesFactory(auxiliaryFunctionsFactory, daoFactory);
     }
 }
 

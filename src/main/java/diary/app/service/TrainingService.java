@@ -1,88 +1,85 @@
 package diary.app.service;
 
-import diary.app.dao.TrainingDao;
-import diary.app.dao.UserRolesDao;
-import diary.app.dto.Training;
-import diary.app.dto.UserAction;
-import diary.app.out.ConsolePrinter;
+import diary.app.dto.ChangeTrainingDto;
+import diary.app.dto.TrainingDto;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+/**
+ * used for interaction with trainingDao
+ */
+public interface TrainingService {
+    /**
+     * method add new training for this user in dao
+     * @param user user login
+     * @param training added training
+     * @return is success or not
+     */
+    boolean addTraining(String user, TrainingDto training);
 
-public class TrainingService {
+    /**
+     * this method used for getting information about the training for user
+     * @param login user login
+     * @param date the date of the training
+     * @param type the type of the training
+     * @return Optional containing the training
+     */
+    Optional<TrainingDto> getTraining(String login, LocalDate date, String type);
 
-    private final TrainingDao trainingDao;
+    /**
+     * this method used for getting all information about all trainings for this user
+     * @param login user login
+     * @return list of all trainings
+     */
+    List<TrainingDto> getAllTrainings(String login);
 
-    public TrainingService(TrainingDao trainingDao) {
-        this.trainingDao = trainingDao;
-    }
+    /**
+     * this method used for getting all information about trainings for this user for the period
+     * @param login user login
+     * @param startDate start date of period
+     * @param endDate period end date
+     * @return list of all trainings for the period
+     */
+    List<TrainingDto> getTrainingsFromThePeriod(String login, LocalDate startDate, LocalDate endDate);
 
-    public boolean addTraining(String user, Training training) {
-        try {
-            trainingDao.addNewTraining(user, training);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
+    /**
+     * used for deleting information about the training
+     * @param login user login
+     * @param date date of training
+     * @param type type of training
+     * @return is success or not
+     */
+    boolean deleteTraining(String login, LocalDate date, String type);
 
-    public Optional<Training> getTraining(String login, LocalDate date, String type) {
-        try {
-            return trainingDao.getTraining(login, date, type);
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-    }
+    /**
+     * used for showing all trainings types
+     * @return set of trainings types
+     */
+    Set<String> getTrainingTypes();
 
-    public List<Training> getAllTrainings(String login) {
-        try {
-            return trainingDao.getAllTrainings(login);
-        } catch (Exception e) {
-            return List.of();
-        }
-    }
+    /**
+     * add new training types
+     * @param training training type
+     * @return
+     */
+    boolean addTrainingType(String training);
 
-    public List<Training> getTrainingsFromThePeriod(String login, LocalDate startDate, LocalDate endDate){
-        try {
-            return trainingDao.getTrainingsFromThePeriod(login, startDate, endDate);
-        } catch (Exception e) {
-            return List.of();
-        }
-    }
+    /**
+     * deleting training type
+     * @param trainingType
+     * @return is successful or not
+     */
+    boolean deleteTrainingType(String trainingType);
 
-    public boolean deleteTraining(String login, LocalDate date, String type){
-        try {
-            return trainingDao.deleteTraining(login, date, type);
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public Set<String> getTrainingTypes(){
-        try {
-            return trainingDao.getTrainingTypes();
-        } catch (Exception e) {
-            return Set.of();
-        }
-    }
-    public boolean addTrainingType(String training){
-        try {
-            trainingDao.addTrainingType(training);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public boolean deleteTrainingType(String trainingType){
-        try {
-            trainingDao.deleteTrainingType(trainingType);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
+    /**
+     * change information about the training
+     * @param login user login
+     * @param changeTrainingDto dto contains information about training will be changed
+     *                          and parameters will be changed
+     * @return is successfull or not
+     */
+    boolean changeTheTraining(String login, ChangeTrainingDto changeTrainingDto);
 
 }

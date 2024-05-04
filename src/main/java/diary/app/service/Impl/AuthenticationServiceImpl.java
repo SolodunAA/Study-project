@@ -1,4 +1,4 @@
-package diary.app.service;
+package diary.app.service.Impl;
 
 import diary.app.auxiliaryfunctions.PasswordEncoder;
 import diary.app.dao.AuditDao;
@@ -8,6 +8,7 @@ import diary.app.dto.AuditItem;
 import diary.app.in.ConsoleReader;
 import diary.app.in.Reader;
 import diary.app.out.ConsolePrinter;
+import diary.app.service.AuthenticationService;
 
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final LoginDao loginDao;

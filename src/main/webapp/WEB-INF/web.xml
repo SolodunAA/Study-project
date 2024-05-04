@@ -13,6 +13,34 @@
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
     <servlet>
+        <servlet-name>registration</servlet-name>
+        <servlet-class>diary.app.servlet.RegistrationServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>registration</servlet-name>
+        <url-pattern>/registration</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>trainingsTypesInteractions</servlet-name>
+        <servlet-class>diary.app.servlet.TrainingsTypesInteractionsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>trainingsTypesInteractions</servlet-name>
+        <url-pattern>/trainings_types</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>oneTrainingInteractions</servlet-name>
+        <servlet-class>diary.app.servlet.OneTrainingInteractionsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>oneTrainingInteractions</servlet-name>
+        <url-pattern>/training</url-pattern>
+    </servlet-mapping>
+
+
+
+
+    <servlet>
         <servlet-name>getAllTrainings</servlet-name>
         <servlet-class>diary.app.servlet.GetAllTrainingsServlet</servlet-class>
     </servlet>
@@ -20,14 +48,7 @@
         <servlet-name>getAllTrainings</servlet-name>
         <url-pattern>/training/get/all_trainings</url-pattern>
     </servlet-mapping>
-    <servlet>
-        <servlet-name>getOneTraining</servlet-name>
-        <servlet-class>diary.app.servlet.GetOneTrainingServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>getOneTraining</servlet-name>
-        <url-pattern>/training/get/one_training</url-pattern>
-    </servlet-mapping>
+
     <servlet>
         <servlet-name>getTrainingsFromThePeriod</servlet-name>
         <servlet-class>diary.app.servlet.GetTrainingsFromThePeriodServlet</servlet-class>
@@ -36,57 +57,5 @@
         <servlet-name>getTrainingsFromThePeriod</servlet-name>
         <url-pattern>/training/get/training_from_period</url-pattern>
     </servlet-mapping>
-    <servlet>
-        <servlet-name>saveTraining</servlet-name>
-        <servlet-class>diary.app.servlet.SaveTrainingServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>saveTraining</servlet-name>
-        <url-pattern>/training/save</url-pattern>
-    </servlet-mapping>
 
-
-    <servlet>
-        <servlet-name>getTrainingsTypes</servlet-name>
-        <servlet-class>diary.app.servlet.GetTrainingsTypesServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>getTrainingsTypes</servlet-name>
-        <url-pattern>/training_types/save</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>addTrainingsTypes</servlet-name>
-        <servlet-class>diary.app.servlet.AddTrainingTypeServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>addTrainingsTypes</servlet-name>
-        <url-pattern>/training_types/add</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>deleteTrainingType</servlet-name>
-        <servlet-class>diary.app.servlet.DeleteTrainingTypeServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>deleteTrainingType</servlet-name>
-        <url-pattern>/training_types/delete</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>deleteTraining</servlet-name>
-        <servlet-class>diary.app.servlet.DeleteTrainingServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>deleteTraining</servlet-name>
-        <url-pattern>/training/delete</url-pattern>
-    </servlet-mapping>
-    <servlet>
-        <servlet-name>registration</servlet-name>
-        <servlet-class>diary.app.servlet.RegistrationServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>registration</servlet-name>
-        <url-pattern>/registration</url-pattern>
-    </servlet-mapping>
 </web-app>

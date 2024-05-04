@@ -1,7 +1,7 @@
 package diary.app.dao.postgres;
 
 import diary.app.dao.TrainingDao;
-import diary.app.dto.Training;
+import diary.app.dto.TrainingDto;
 import diary.app.out.ConsolePrinter;
 import org.postgresql.util.PSQLException;
 
@@ -77,7 +77,7 @@ public class PostgresTrainingDao implements TrainingDao {
     }
 
     @Override
-    public void addNewTraining(String login, Training tng) {
+    public void addNewTraining(String login, TrainingDto tng) {
         try (Connection connection = DriverManager.getConnection(url, userName, password);
              PreparedStatement ps = SqlUtils.createPreparedStatement(connection, INSERT_NEW_TRAINING_SQL, schema)) {
             ps.setString(1, login);
@@ -99,7 +99,7 @@ public class PostgresTrainingDao implements TrainingDao {
     }
 
     @Override
-    public Optional<Training> getTraining(String login, LocalDate date, String type) {
+    public Optional<TrainingDto> getTraining(String login, LocalDate date, String type) {
         try (Connection connection = DriverManager.getConnection(url, userName, password);
              PreparedStatement ps = SqlUtils.createPreparedStatement(connection, RETRIEVE_TRAINING_RECORD_SQL, schema)) {
             ps.setString(1, login);
@@ -111,7 +111,7 @@ public class PostgresTrainingDao implements TrainingDao {
                 double time = resultSet.getDouble("time");
                 int calories = resultSet.getInt("calories");
                 String extraInfo = resultSet.getString("extra_info");
-                var training = new Training(date, type, time, calories, extraInfo);
+                var training = new TrainingDto(date, type, time, calories, extraInfo);
                 return Optional.of(training);
             } else {
                 ConsolePrinter.print("training does not exist");
@@ -137,8 +137,8 @@ public class PostgresTrainingDao implements TrainingDao {
     }
 
     @Override
-    public List<Training> getAllTrainings(String login) {
-        List<Training> list = new ArrayList<>();
+    public List<TrainingDto> getAllTrainings(String login) {
+        List<TrainingDto> list = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(url, userName, password);
              PreparedStatement ps = SqlUtils.createPreparedStatement(connection, RETRIEVE_ALL_TRAINING_RECORD_SQL, schema)) {
             ps.setString(1, login);
@@ -149,7 +149,7 @@ public class PostgresTrainingDao implements TrainingDao {
                 double time = resultSet.getDouble("time");
                 int calories = resultSet.getInt("calories");
                 String extraInfo = resultSet.getString("extra_info");
-                Training training = new Training(date, type, time, calories, extraInfo);
+                TrainingDto training = new TrainingDto(date, type, time, calories, extraInfo);
                 list.add(training);
             }
 
@@ -160,8 +160,8 @@ public class PostgresTrainingDao implements TrainingDao {
     }
 
     @Override
-    public List<Training> getTrainingsFromThePeriod(String login, LocalDate startDate, LocalDate endDate) {
-        List<Training> list = new ArrayList<>();
+    public List<TrainingDto> getTrainingsFromThePeriod(String login, LocalDate startDate, LocalDate endDate) {
+        List<TrainingDto> list = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(url, userName, password);
              PreparedStatement ps = SqlUtils.createPreparedStatement(connection, RETRIEVE_ALL_TRAINING_RECORD_FOR_PERIOD_SQL, schema)) {
             ps.setString(1, login);
@@ -174,7 +174,7 @@ public class PostgresTrainingDao implements TrainingDao {
                 double time = resultSet.getDouble("time");
                 int calories = resultSet.getInt("calories");
                 String extraInfo = resultSet.getString("extra_info");
-                Training training = new Training(date, type, time, calories, extraInfo);
+                TrainingDto training = new TrainingDto(date, type, time, calories, extraInfo);
                 list.add(training);
             }
 

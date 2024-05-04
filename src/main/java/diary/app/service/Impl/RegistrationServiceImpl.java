@@ -1,10 +1,11 @@
-package diary.app.service;
+package diary.app.service.Impl;
 
 import diary.app.dao.UserRolesDao;
 import diary.app.dto.Role;
 import diary.app.out.ConsolePrinter;
 import diary.app.auxiliaryfunctions.PasswordEncoder;
 import diary.app.dao.LoginDao;
+import diary.app.service.RegistrationService;
 
 public class RegistrationServiceImpl implements RegistrationService {
 

@@ -1,10 +1,6 @@
 package diary.app.factory;
 
 import diary.app.dao.*;
-import diary.app.dao.inmemory.InMemoryAuditDao;
-import diary.app.dao.inmemory.InMemoryLoginDao;
-import diary.app.dao.inmemory.InMemoryRolesDao;
-import diary.app.dao.inmemory.InMemoryTrainingDao;
 import diary.app.dao.postgres.*;
 
 public class DaoFactory {
@@ -13,14 +9,6 @@ public class DaoFactory {
     private final TrainingDao trainingDao;
     private final UserRolesDao userRolesDao;
     private final TokenDao tokenDao;
-
-    private DaoFactory() {
-        this.auditDao = new InMemoryAuditDao();
-        this.loginDao = new InMemoryLoginDao();
-        this.trainingDao = new InMemoryTrainingDao();
-        this.userRolesDao = new InMemoryRolesDao();
-        this.tokenDao = null;
-    }
 
     private DaoFactory(String url,
                        String user,
@@ -32,10 +20,6 @@ public class DaoFactory {
         this.userRolesDao = new PostgresUserRolesDao(url, user, pswd, adminSchema);
         this.trainingDao = new PostgresTrainingDao(url, user, pswd, dataSchema);
         this.tokenDao = new PostgresTokenDao(url, user, pswd, adminSchema);
-    }
-
-    public static DaoFactory createInMemoryDaoFactory() {
-        return new DaoFactory();
     }
 
     public static DaoFactory createPostgreDaoFactory(String url,
