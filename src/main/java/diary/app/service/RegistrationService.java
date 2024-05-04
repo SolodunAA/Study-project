@@ -1,5 +1,5 @@
 package diary.app.service;
 
 public interface RegistrationService {
-    void register();
+    boolean register(String login, String password);
 }

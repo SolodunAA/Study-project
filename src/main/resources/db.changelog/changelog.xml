@@ -12,6 +12,7 @@
     <include file="005_create_user_role_table.xml" relativeToChangelogFile="true"/>
     <include file="006_create_audit_table.xml" relativeToChangelogFile="true"/>
     <include file="007_create_trainings_table.xml" relativeToChangelogFile="true"/>
+    <include file="013_create_token_table.xml" relativeToChangelogFile="true"/>
     <include file="008_create_foreign_keys.xml" relativeToChangelogFile="true"/>
     <include file="009_insert_login_table.xml" relativeToChangelogFile="true"/>
     <include file="010_insert_login_password.xml" relativeToChangelogFile="true"/>

@@ -3,15 +3,41 @@ package diary.app.dto;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Training {
-    private final LocalDate date;
-    private final String type;
-    private final double timeInMinutes;
-    private final int calories;
-    private final String additionalInfo;
+public class TrainingDto {
+    private LocalDate date;
+    private String type;
+    private double timeInMinutes;
+    private int calories;
+    private String additionalInfo;
 
-    public Training(LocalDate date, String type, double timeInMinutes,
-                    int calories, String additionalInfo){
+    public TrainingDto() {
+
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setTimeInMinutes(double timeInMinutes) {
+        this.timeInMinutes = timeInMinutes;
+    }
+
+    public void setCalories(int calories) {
+        this.calories = calories;
+    }
+
+    public void setAdditionalInfo(String additionalInfo) {
+        this.additionalInfo = additionalInfo;
+    }
+
+
+
+    public TrainingDto(LocalDate date, String type, double timeInMinutes,
+                       int calories, String additionalInfo){
         this.date = date;
         this.type = type;
         this.timeInMinutes = timeInMinutes;
@@ -52,7 +78,7 @@ public class Training {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Training training = (Training) o;
+        TrainingDto training = (TrainingDto) o;
         return Double.compare(timeInMinutes, training.timeInMinutes) == 0 && calories == training.calories && Objects.equals(date, training.date) && Objects.equals(type, training.type) && Objects.equals(additionalInfo, training.additionalInfo);
     }
 

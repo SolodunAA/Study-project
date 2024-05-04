@@ -5,23 +5,20 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
         logicalFilePath="db/changelog.xml">
-    <changeSet id="006_create_audit_table.xml" author="Solodun">
-        <createSequence sequenceName="audit_id_seq" schemaName="admin_data"
+    <changeSet id="013_create_token_table.xml" author="Solodun">
+        <createSequence sequenceName="token_id_seq" schemaName="admin_data"
                         minValue="1"
                         dataType="BIGINT"/>
-        <createTable tableName="audit_table" schemaName="admin_data" remarks="user actions audit">
-            <column name="audit_id" type="BIGINT" defaultValueComputed="nextval('admin_data.audit_id_seq')">
+        <createTable tableName="token_table" schemaName="admin_data" remarks="token">
+            <column name="token_id" type="BIGINT" defaultValueComputed="nextval('admin_data.token_id_seq')">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="login" type="VARCHAR(255)">
+            <column name="login_id" type="BIGINT" remarks="FK with login table">
                 <constraints nullable="false"/>
             </column>
-            <column name="time" type="BIGINT" remarks="timestamp of action"/>
-            <column name="action" type="VARCHAR(255)" remarks="action name"/>
-            <column name="user_input" type="VARCHAR(255)" remarks="user input"/>
+            <column name="token" type="VARCHAR(255)" remarks="token"/>
+            <column name="time" type="BIGINT" remarks="timestamp"/>
         </createTable>
-
-
     </changeSet>
 
 </databaseChangeLog>

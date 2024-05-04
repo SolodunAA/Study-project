@@ -1,30 +1,23 @@
 package diary.app;
 
 import diary.app.dao.UserRolesDao;
-import diary.app.dto.Role;
 import diary.app.factory.DaoFactory;
-import diary.app.factory.InOutFactory;
 import diary.app.factory.ServicesFactory;
 import diary.app.in.Reader;
 import diary.app.out.ConsolePrinter;
 import diary.app.service.AuthenticationService;
 import diary.app.service.RegistrationService;
-import diary.app.service.UserOfficeService;
 
 public class DiaryApp {
 
     private final UserRolesDao userRolesDao;
     private final RegistrationService registrationService;
     private final AuthenticationService authenticationService;
-    private final UserOfficeService userOffice;
-    private final Reader reader;
 
-    public DiaryApp(DaoFactory daoFactory,InOutFactory inOutFactory, ServicesFactory servicesFactory) {
+    public DiaryApp(DaoFactory daoFactory, ServicesFactory servicesFactory) {
         this.userRolesDao = daoFactory.getUserRolesDao();
         this.registrationService = servicesFactory.getRegistrationService();
         this.authenticationService = servicesFactory.getAuthenticationService();
-        this.userOffice = servicesFactory.getUserOfficeService();
-        this.reader = inOutFactory.getReader();
     }
 
     public void run() {
@@ -40,7 +33,7 @@ public class DiaryApp {
     }
 
     private void runUserInteractions() {
-        // print options
+       /* // print options
         ConsolePrinter.print("Print 1 if you want to register");
         ConsolePrinter.print("Print 2 if you want to login");
         ConsolePrinter.print("Print 3 if you want to stop server");
@@ -61,7 +54,7 @@ public class DiaryApp {
             }
             case "3" -> Thread.currentThread().interrupt();
             default -> ConsolePrinter.print("Error, try again");
-        }
+        }*/
     }
 
 }

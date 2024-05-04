@@ -22,13 +22,6 @@
                                  baseTableSchemaName="admin_data"
                                  referencedTableSchemaName="admin_data"/>
 
-        <addForeignKeyConstraint baseTableName="audit_table"
-                                 baseColumnNames="login_id"
-                                 constraintName="fk_login_audit"
-                                 referencedTableName="login_table"
-                                 referencedColumnNames="login_id"
-                                 baseTableSchemaName="admin_data"
-                                 referencedTableSchemaName="admin_data"/>
 
         <addForeignKeyConstraint baseTableName="trainings_table"
                                  baseColumnNames="login_id"
@@ -45,6 +38,14 @@
                                  referencedColumnNames="training_type_id"
                                  baseTableSchemaName="dairy"
                                  referencedTableSchemaName="dairy"/>
+
+        <addForeignKeyConstraint baseTableName="token_table"
+                                 baseColumnNames="login_id"
+                                 constraintName="fk_login_token"
+                                 referencedTableName="login_table"
+                                 referencedColumnNames="login_id"
+                                 baseTableSchemaName="admin_data"
+                                 referencedTableSchemaName="admin_data"/>
     </changeSet>
 
 </databaseChangeLog>

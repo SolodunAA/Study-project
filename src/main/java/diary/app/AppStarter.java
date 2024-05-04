@@ -6,10 +6,9 @@ public class AppStarter {
 
     public static void main(String[] args) {
         DaoFactory daoFactory = DaoFactoryConfig.resolveDaoFactoryAndRunMigrations();
-        InOutFactory inOutFactory = new InOutFactory();
-        AuxiliaryFunctionsFactory auxiliaryFunctionsFactory= new AuxiliaryFunctionsFactory(inOutFactory, daoFactory);
-        ServicesFactory servicesFactory = new ServicesFactory(inOutFactory, auxiliaryFunctionsFactory, daoFactory);
-        DiaryApp diaryApp = new DiaryApp(daoFactory, inOutFactory, servicesFactory);
+        AuxiliaryFunctionsFactory auxiliaryFunctionsFactory= new AuxiliaryFunctionsFactory( daoFactory);
+        ServicesFactory servicesFactory = new ServicesFactory( auxiliaryFunctionsFactory, daoFactory);
+        DiaryApp diaryApp = new DiaryApp(daoFactory, servicesFactory);
         diaryApp.run();
     }
 

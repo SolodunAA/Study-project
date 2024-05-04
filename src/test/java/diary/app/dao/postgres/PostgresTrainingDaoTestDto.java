@@ -2,7 +2,7 @@ package diary.app.dao.postgres;
 
 import diary.app.dao.LoginDao;
 import diary.app.dao.TrainingDao;
-import diary.app.dto.Training;
+import diary.app.dto.TrainingDto;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -21,7 +21,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PostgresTrainingDaoTest {
+public class PostgresTrainingDaoTestDto {
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
             "postgres:15-alpine"
     );
@@ -82,8 +82,8 @@ public class PostgresTrainingDaoTest {
         int time = 45;
         int calories = 150;
         String addInfo = "no";
-        Training training = new Training(date, type, time, calories, addInfo);
-        List<Training> list = new ArrayList<>();
+        TrainingDto training = new TrainingDto(date, type, time, calories, addInfo);
+        List<TrainingDto> list = new ArrayList<>();
 
         list.add(training);
         trainingDao.addNewTraining(login, training);
@@ -99,7 +99,7 @@ public class PostgresTrainingDaoTest {
         int time = 45;
         int calories = 150;
         String addInfo = "no";
-        Training training = new Training(date, type, time, calories, addInfo);
+        TrainingDto training = new TrainingDto(date, type, time, calories, addInfo);
         trainingDao.addNewTraining(login, training);
 
         assertThat(trainingDao.getTraining(login, date, type).orElseThrow()).isEqualTo(training);
@@ -113,7 +113,7 @@ public class PostgresTrainingDaoTest {
         int time = 45;
         int calories = 150;
         String addInfo = "no";
-        Training training = new Training(date, type, time, calories, addInfo);
+        TrainingDto training = new TrainingDto(date, type, time, calories, addInfo);
 
         trainingDao.addNewTraining(login, training);
         trainingDao.deleteTraining(login, date, type);
@@ -129,16 +129,16 @@ public class PostgresTrainingDaoTest {
         int time1 = 45;
         int calories1 = 150;
         String addInfo1 = "no";
-        Training training1 = new Training(date1, type1, time1, calories1, addInfo1);
+        TrainingDto training1 = new TrainingDto(date1, type1, time1, calories1, addInfo1);
 
         LocalDate date2 = LocalDate.parse("2024-04-15");
         String type2 = "gym";
         int time2 = 65;
         int calories2 = 500;
         String addInfo2 = "59km";
-        Training training2 = new Training(date2, type2, time2, calories2, addInfo2);
+        TrainingDto training2 = new TrainingDto(date2, type2, time2, calories2, addInfo2);
 
-        List<Training> list = new ArrayList<>();
+        List<TrainingDto> list = new ArrayList<>();
 
         trainingDao.addNewTraining(login, training1);
         trainingDao.addNewTraining(login, training2);
@@ -159,23 +159,23 @@ public class PostgresTrainingDaoTest {
         int time1 = 45;
         int calories1 = 150;
         String addInfo1 = "no";
-        Training training1 = new Training(date1, type1, time1, calories1, addInfo1);
+        TrainingDto training1 = new TrainingDto(date1, type1, time1, calories1, addInfo1);
 
         LocalDate date2 = LocalDate.parse("2024-04-15");
         String type2 = "gym";
         int time2 = 65;
         int calories2 = 500;
         String addInfo2 = "59km";
-        Training training2 = new Training(date2, type2, time2, calories2, addInfo2);
+        TrainingDto training2 = new TrainingDto(date2, type2, time2, calories2, addInfo2);
 
         LocalDate date3 = LocalDate.parse("2023-04-15");
         String type3 = "jogging";
         int time3 = 35;
         int calories3 = 230;
         String addInfo3 = "no";
-        Training training3 = new Training(date3, type3, time3, calories3, addInfo3);
+        TrainingDto training3 = new TrainingDto(date3, type3, time3, calories3, addInfo3);
 
-        List<Training> list = new ArrayList<>();
+        List<TrainingDto> list = new ArrayList<>();
 
         trainingDao.addNewTraining(login, training1);
         trainingDao.addNewTraining(login, training2);

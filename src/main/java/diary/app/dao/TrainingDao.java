@@ -1,6 +1,6 @@
 package diary.app.dao;
 
-import diary.app.dto.Training;
+import diary.app.dto.TrainingDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,7 +16,7 @@ public interface TrainingDao {
      * @param login username whose workout need to add
      * @param tng added training
      */
-    void addNewTraining(String login, Training tng);
+    void addNewTraining(String login, TrainingDto tng);
 
     /**
      * Method get training information from storage
@@ -25,7 +25,7 @@ public interface TrainingDao {
      * @param type - training type
      * @return training record
      */
-    Optional<Training> getTraining(String login, LocalDate date, String type);
+    Optional<TrainingDto> getTraining(String login, LocalDate date, String type);
 
     /**
      * Method delete information about selected training from the storage
@@ -33,14 +33,14 @@ public interface TrainingDao {
      * @param date - date of the training
      * @param type - training type
      */
-    void deleteTraining(String login, LocalDate date, String type);
+    boolean deleteTraining(String login, LocalDate date, String type);
 
     /**
      * Method get all training records
      * @param login - login of the user
      * @return List which contains training records
      */
-    List<Training> getAllTrainings(String login);
+    List<TrainingDto> getAllTrainings(String login);
 
     /**
      * Method get all training records for the period
@@ -49,7 +49,7 @@ public interface TrainingDao {
      * @param endDate - period утв date
      * @return List which contains training records
      */
-    List<Training> getTrainingsFromThePeriod(String login, LocalDate startDate, LocalDate endDate);
+    List<TrainingDto> getTrainingsFromThePeriod(String login, LocalDate startDate, LocalDate endDate);
 
     /**
      * @return set of trainings type

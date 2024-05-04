@@ -9,12 +9,11 @@ import java.util.List;
 public class PostgresAuditDao implements AuditDao {
     private static final String INSERT_AUDIT_ITEM_SQL = """
             INSERT INTO :SCHEMA.audit_table
-            (login_id, time, action, user_input) VALUES ((SELECT login_id FROM :SCHEMA.login_table WHERE login = ?),?,?,?)
+            (login, time, action, user_input) VALUES (?,?,?,?)
             """;
     private static final String RETRIEVE_AUDIT_RECORD_SQL = """
             SELECT login, time, action, user_input
             FROM :SCHEMA.audit_table
-            JOIN :SCHEMA.login_table USING(login_id)
             LIMIT ?
             """;
     private static final String SELECT_COUNT = "SELECT COUNT(*) FROM :SCHEMA.audit_table";
